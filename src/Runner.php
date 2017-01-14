@@ -1,6 +1,6 @@
 <?php
 
-namespace KamranAhmed\Lost;
+namespace KamranAhmed\Walkers;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,7 +12,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *
  * Responsible for initializing the game
  *
- * @package KamranAhmed\Lost
+ * @package KamranAhmed\Walkers
  */
 class Runner extends Command
 {

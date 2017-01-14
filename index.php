@@ -2,7 +2,7 @@
 <?php
 require __DIR__ . '/vendor/autoload.php';
 
-use KamranAhmed\Lost\Runner;
+use KamranAhmed\Walkers\Runner;
 use Symfony\Component\Console\Application;
 
 /*

@@ -11,7 +11,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "KamranAhmed\\Lost\\": "src/"
+      "KamranAhmed\\Walkers\\": "src/"
     }
   },
   "require": {
