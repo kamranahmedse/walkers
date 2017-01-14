@@ -2,7 +2,7 @@
 <?php
 require __DIR__ . '/vendor/autoload.php';
 
-use KamranAhmed\Lost\Game;
+use KamranAhmed\Lost\Runner;
 use Symfony\Component\Console\Application;
 
 /*
@@ -15,7 +15,7 @@ use Symfony\Component\Console\Application;
 |
 */
 $app  = new Application('lost', '1.0.0');
-$game = new Game();
+$game = new Runner();
 
 $app->add($game);
 
