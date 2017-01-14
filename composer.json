@@ -1,0 +1,16 @@
+{
+  "name": "kamranahmedse/lost",
+  "description": "Game where you are lost in a jungle filled with mystic creatures, you have to find a way out of it alive",
+  "type": "project",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Kamran Ahmed",
+      "email": "kamranahmed.se@gmail.com"
+    }
+  ],
+  "require": {},
+  "require-dev": {
+    "phpunit/phpunit": "^5.7"
+  }
+}
