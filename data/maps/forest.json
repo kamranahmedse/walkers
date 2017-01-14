@@ -1,0 +1,151 @@
+{
+  "name": "Forest",
+  "meta": {
+    "author": "Kamran Ahmed",
+    "email": "kamranahmed.se@gmail.com",
+    "tagline": "Lost in the forest filled with mystical creatures"
+  },
+  "spots": [
+    {
+      "spot1": {
+        "alias": "No Where",
+        "description": "You are on the other side of a burnt broken bridge, you look back to see the debris and a steady stream of water. You turn around and see a fountain. (hint : navigate around to explore [ex: `go north`])",
+        "help": "Look around and see if you can find something you can use",
+        "actions": null,
+        "exits": {
+          "north": "spot2",
+          "east": false,
+          "south": "spot5",
+          "west": false
+        },
+        "objects": null,
+        "enemies": null
+      }
+    },
+    {
+      "spot2": {
+        "alias": "A Fountain",
+        "description": "You are near the fountain. It is in front of a huge mansion. There is a half filled bottle of water just besides it",
+        "help": "Water is helpful when you are dehydrated from all the walking around",
+        "actions": null,
+        "exits": {
+          "north": "spot6",
+          "east": "spot3",
+          "south": "spot1",
+          "west": false
+        },
+        "objects": {
+          "bottle": {
+            "actions": null
+          }
+        },
+        "enemies": null
+      }
+    },
+    {
+      "spot3": {
+        "alias": "Forest",
+        "description": "There are trees all around you. There is a sword lying besides you.",
+        "help": "You can use swords to kill enemies",
+        "actions": {
+          "pick sword": "You have picked up a sword."
+        },
+        "exits": {
+          "north": "spot3",
+          "east": "spot3",
+          "south": "spot3",
+          "west": "spot1"
+        },
+        "objects": {
+          "sword": {
+            "actions": null
+          }
+        },
+        "enemies": null
+      }
+    },
+    {
+      "spot4": {
+        "alias": "Forest",
+        "description": "Tall trees are all around you. A speck of light is coming from the south.",
+        "help": "Forest forest everywhere.. ",
+        "actions": null,
+        "exits": {
+          "north": false,
+          "east": false,
+          "south": "spot7",
+          "west": "spot1"
+        },
+        "objects": null,
+        "enemies": null
+      }
+    },
+    {
+      "spot5": {
+        "alias": "Forest",
+        "description": "There are trees all around you",
+        "help": "Forest forest everywhere.. ",
+        "actions": null,
+        "exits": {
+          "north": "spot1",
+          "east": "spot7",
+          "south": "spot4",
+          "west": "spot8"
+        },
+        "objects": null,
+        "enemies": null
+      }
+    },
+    {
+      "spot6": {
+        "alias": "Hills",
+        "description": "You have reached the entrance of the huge mansion. The door is locked and all the windows in the front are bolted",
+        "help": "You could use some stones",
+        "actions": {
+          "pick stone": "Filled my pockets with 'em"
+        },
+        "exits": {
+          "north": false,
+          "east": false,
+          "south": "spot2",
+          "west": false
+        },
+        "objects": null,
+        "enemies": null
+      }
+    },
+    {
+      "spot7": {
+        "alias": "River",
+        "description": "Standing beside the the banks of a fast flowing river.",
+        "help": "Wish I could tell you!!",
+        "actions": null,
+        "exits": {
+          "north": "spot4",
+          "east": false,
+          "south": "spot7",
+          "west": false
+        },
+        "objects": null,
+        "enemies": null
+      }
+    },
+    {
+      "spot8": {
+        "alias": "Rescue Car",
+        "description": "You found a rescue car! You finally made it!! Thanks for playing Lost",
+        "help": "",
+        "actions": null,
+        "isExit": true,
+        "exits": {
+          "north": false,
+          "east": false,
+          "south": false,
+          "west": false
+        },
+        "objects": null,
+        "enemies": null
+      }
+    }
+  ]
+}
