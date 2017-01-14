@@ -9,6 +9,11 @@
       "email": "kamranahmed.se@gmail.com"
     }
   ],
+  "autoload": {
+    "psr-4": {
+      "KamranAhmed\\Lost\\": "src/"
+    }
+  },
   "require": {},
   "require-dev": {
     "phpunit/phpunit": "^5.7"
