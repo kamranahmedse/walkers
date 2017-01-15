@@ -16,6 +16,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 class Runner extends Command
 {
+    /**
+     * @var SymfonyStyle
+     */
     protected $io;
 
     /**
@@ -37,8 +40,8 @@ class Runner extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->io = new SymfonyStyle($input, $output);
-        $this->io->title('Lost - An Adventure Game');
 
-        $this->io->ask('What are you doing');
+        $map = new Map($this->io);
+        $map->play();
     }
 }
