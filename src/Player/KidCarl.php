@@ -11,5 +11,5 @@ use KamranAhmed\Walkers\Player\Abstracts\BasePlayer;
  */
 class KidCarl extends BasePlayer
 {
-
+    protected $name = 'Carl';
 }
