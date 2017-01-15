@@ -43,6 +43,18 @@ class Map
     public function play()
     {
         $this->initialize();
+
+        $this->io->text('You will be shown some doors! Carefully choose a door while praying that you do not come across a Walker!');
+        $this->io->text('Say your prayers and press any key to continue ..');
+
+        fgetc(STDIN);
+
+        $doors = $this->generateDoors();
+
+        $choice = $this->io->choice('Carefully choose the door to enter!', array_keys($doors));
+
+        // while ($this->player->isAlive()) {
+        // }
     }
 
     protected function initialize()
@@ -54,6 +66,32 @@ class Map
         if (empty($this->player)) {
             $this->choosePlayer();
         }
+    }
+
+    public function generateDoors()
+    {
+        $totalDoors = intval($this->levelDetail['doorCount'] ?? 3);
+        $walkers    = $this->levelDetail['walkers'] ?? [];
+
+        if (count($walkers) === $totalDoors) {
+            throw new InvalidLevelException('Door count must be less than walker count');
+        }
+
+        // Create allowed number of doors
+        $doors = array_fill(0, $totalDoors, false);
+
+        foreach ($walkers as $counter => $walker) {
+            $doors[$counter] = new $walker;
+        }
+
+        shuffle($doors);
+
+        $namedDoors = [];
+        foreach ($doors as $counter => $door) {
+            $namedDoors['Door # ' . $counter] = $door;
+        }
+
+        return $namedDoors;
     }
 
     public function choosePlayer()

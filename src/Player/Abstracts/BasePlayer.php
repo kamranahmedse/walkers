@@ -34,4 +34,9 @@ abstract class BasePlayer implements Player
     {
         return $this->name;
     }
+
+    public function isAlive()
+    {
+        return !empty($this->health);
+    }
 }

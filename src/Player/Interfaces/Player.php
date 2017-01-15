@@ -10,4 +10,6 @@ interface Player
     public function getHealth();
 
     public function getName();
+
+    public function isAlive();
 }
