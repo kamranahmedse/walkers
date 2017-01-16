@@ -49,9 +49,21 @@ class Map
 
         fgetc(STDIN);
 
-        $doors = $this->generateDoors();
+        do {
+            $doors = $this->generateDoors();
 
-        $choice = $this->io->choice('Carefully choose the door to enter!', array_keys($doors));
+            $choice = $this->io->choice('Carefully choose the door to enter!', array_keys($doors));
+
+            // If there was nothing in the door
+            if (empty($doors[$choice])) {
+                $this->populateLevel(++$this->level);
+                continue;
+            } else {
+                $this->io->warning('Woah! You have came across a zombie');
+                fgetc(STDIN);
+            }
+
+        } while ($this->player->isAlive());
 
         // while ($this->player->isAlive()) {
         // }
@@ -106,11 +118,19 @@ class Map
         $this->io->title('Godspeed ' . $this->player->getName() . '!');
     }
 
-    public function populateLevel($level)
+    public function populateLevel(int $level)
     {
         $map = require __DIR__ . '/../config/map.php';
+
         if (empty($map['levels'][$level])) {
-            throw new InvalidLevelException('Invalid level number ' . $level);
+
+            // If it was level `0` and we even don't have that
+            if (empty($level)) {
+                throw new InvalidLevelException('Specified level does not exist ' . $level);
+            }
+
+            // Any other level and it doesn't exist means end has been reached
+            $this->showCompletionExit();
         }
 
         $this->level       = $level;
@@ -121,5 +141,11 @@ class Map
     {
         $this->io->title('The Walking Dead');
         $this->io->text('Welcome to the world of the dead, see if you can ditch your way through the walkers towards the sanctuary.');
+    }
+
+    public function showCompletionExit()
+    {
+        $this->io->success('Good work ' . $this->player->getName() . '! You have made it alive through the other end');
+        exit();
     }
 }
