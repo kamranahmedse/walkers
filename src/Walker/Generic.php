@@ -12,8 +12,14 @@ use KamranAhmed\Walkers\Walker\Abstracts\BaseWalker;
  */
 class Generic extends BaseWalker
 {
+    /** @var string */
+    protected $name = 'Common Walker';
+
+    /** @var int */
+    protected $damage = 5;
+
     public function eat(Player $player)
     {
-
+        $player->setHealth($player->getHealth() - $this->damage);
     }
 }

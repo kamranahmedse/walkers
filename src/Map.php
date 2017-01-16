@@ -5,6 +5,7 @@ namespace KamranAhmed\Walkers;
 use KamranAhmed\Walkers\Exceptions\InvalidLevelException;
 use KamranAhmed\Walkers\Player\Interfaces\Player;
 use KamranAhmed\Walkers\Storage\Interfaces\GameStorage;
+use KamranAhmed\Walkers\Walker\Interfaces\Walker;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -56,6 +57,8 @@ class Map
         do {
             $this->io->section('Level ' . ($this->level + 1));
 
+            $this->showProgress();
+
             $doors = $this->generateDoors();
 
             $doorNames = array_keys($doors);
@@ -70,12 +73,15 @@ class Map
 
             // If there was no walker in the door
             if (empty($doors[$choice])) {
-                $this->io->block('Well that was close!', null, 'fg=yellow;');
+                $this->io->block('Phew! Nothing in that door!', null, 'fg=yellow;bg=blue;', ' ', 1);
                 $this->advanceLevel(++$this->level);
                 continue;
             } else {
-                $this->io->warning('Woah! You have came across a zombie');
-                fgetc(STDIN);
+                /** @var Walker $walker */
+                $walker = $doors[$choice];
+
+                $this->io->block($walker->getName() . ' Ahead!', null, 'fg=white;bg=red', ' ');
+                $walker->eat($this->player);
             }
 
         } while ($this->player->isAlive());
@@ -110,10 +116,10 @@ class Map
             $this->choosePlayer();
         }
 
-        $this->io->text('You will be shown some doors! Carefully choose a door while praying that you do not come across a Walker!');
-        $this->io->text('Say your prayers and press any key to continue ..');
+        $this->io->text('You will be shown some doors!');
+        $this->io->text('Carefully choose a door while praying that you do not come across a Walker!');
 
-        fgetc(STDIN);
+        $this->io->newLine();
     }
 
     public function generateDoors()
@@ -121,8 +127,8 @@ class Map
         $totalDoors = intval($this->levelDetail['doorCount'] ?? 3);
         $walkers    = $this->levelDetail['walkers'] ?? [];
 
-        if (count($walkers) === $totalDoors) {
-            throw new InvalidLevelException('Door count must be less than walker count');
+        if (count($walkers) >= $totalDoors) {
+            throw new InvalidLevelException('Door count must be greater than walker count');
         }
 
         // Create allowed number of doors
@@ -185,14 +191,19 @@ class Map
 
     public function showCompletionExit()
     {
-        $this->io->title('Game Complete');
-
         $this->io->success('Good work ' . $this->player->getName() . '! You have made it alive through the other end');
-        $this->io->listing([
-            'Experience: ' . $this->player->getExperience(),
-            'Health: ' . $this->player->getHealth(),
-        ]);
+        $this->showProgress();
 
         exit(0);
+    }
+
+    public function showProgress()
+    {
+        $this->io->table(
+            ['Level', 'Experience', 'Health'],
+            [
+                [$this->level + 1, $this->player->getExperience(), $this->player->getHealth()],
+            ]
+        );
     }
 }

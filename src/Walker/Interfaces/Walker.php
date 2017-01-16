@@ -9,7 +9,7 @@ use KamranAhmed\Walkers\Player\Interfaces\Player;
  */
 interface Walker
 {
-    public function getHealth();
+    public function getName();
 
     public function eat(Player $player);
 }

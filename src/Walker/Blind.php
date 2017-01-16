@@ -12,8 +12,14 @@ use KamranAhmed\Walkers\Walker\Abstracts\BaseWalker;
  */
 class Blind extends BaseWalker
 {
+    /** @var string */
+    protected $name = 'Blind Walker';
+
+    /** @var int */
+    protected $damage = 10;
+
     public function eat(Player $player)
     {
-
+        $player->setHealth($player->getHealth() - $this->damage);
     }
 }

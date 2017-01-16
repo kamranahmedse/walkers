@@ -1,6 +1,7 @@
 <?php
 
 namespace KamranAhmed\Walkers\Walker\Abstracts;
+
 use KamranAhmed\Walkers\Walker\Interfaces\Walker;
 
 /**
@@ -10,15 +11,15 @@ use KamranAhmed\Walkers\Walker\Interfaces\Walker;
  */
 abstract class BaseWalker implements Walker
 {
-    /** @var int */
-    protected $health;
+    /** @var string */
+    protected $name = 'Unknown';
 
     /**
-     * @return int
+     * @return string
      */
-    public function getHealth():int
+    public function getName()
     {
-        return $this->health;
+        return $this->name;
     }
 
     /**

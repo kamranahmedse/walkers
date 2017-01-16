@@ -7,6 +7,8 @@ namespace KamranAhmed\Walkers\Player\Interfaces;
  */
 interface Player
 {
+    public function setHealth(int $health);
+
     public function getHealth();
 
     public function getExperience();

@@ -12,8 +12,14 @@ use KamranAhmed\Walkers\Walker\Abstracts\BaseWalker;
  */
 class Deadly extends BaseWalker
 {
+    /** @var string */
+    protected $name = 'Deadly Walker';
+
+    /** @var int */
+    protected $damage = 25;
+
     public function eat(Player $player)
     {
-
+        $player->setHealth($player->getHealth() - $this->damage);
     }
 }

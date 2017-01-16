@@ -51,6 +51,11 @@ abstract class BasePlayer implements Player
         return !empty($this->health);
     }
 
+    public function setHealth(int $health)
+    {
+        $this->health = $health <= 0 ? 0 : $health;
+    }
+
     public function toArray():array
     {
         return [
