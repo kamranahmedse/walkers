@@ -6,14 +6,14 @@ use KamranAhmed\Walkers\Player\Interfaces\Player;
 use KamranAhmed\Walkers\Walker\Abstracts\BaseWalker;
 
 /**
- * Class Generic
+ * Class OneLegged
  *
  * @package KamranAhmed\Walkers\Walker
  */
-class Generic extends BaseWalker
+class OneLegged extends BaseWalker
 {
     /** @var string */
-    protected $name = 'Common Walker';
+    protected $name = 'One Legged Walker';
 
     /** @var int */
     protected $damage = 5;

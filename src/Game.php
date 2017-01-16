@@ -14,8 +14,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 class Game
 {
-    const SAVE_EXIT = 'Save and Exit';
-
     /** @var int */
     protected $level;
 
@@ -31,8 +29,12 @@ class Game
     /** @var GameStorage $storage */
     protected $storage;
 
+    const SAVE_EXIT = 'Save and Exit';
+    const EXIT      = 'Exit';
+
     protected $actions = [
         self::SAVE_EXIT,
+        self::EXIT,
     ];
 
     /**
@@ -63,6 +65,9 @@ class Game
                 $this->saveGame();
                 $this->io->success('Bye bye ' . $this->player->getName() . '! Walkers will be waiting for you');
                 exit(0);
+            case static::EXIT:
+                $this->io->success('Bye bye ' . $this->player->getName() . '! Walkers will be waiting for you');
+                exit(0);
         }
     }
 
@@ -79,7 +84,7 @@ class Game
         if ($this->player->isAlive()) {
             $this->io->success('Good work ' . $this->player->getName() . '! You have made it alive through the other end');
         } else {
-            $this->io->block('Rest in peace ' . $this->player->getName(), ' ', 'fg=black;bg=green', ' ', true);
+            $this->io->block('Rest in peace ' . $this->player->getName(), null, 'fg=black;bg=green', ' ', true);
         }
 
         $this->showProgress();
@@ -121,17 +126,20 @@ class Game
             $this->io->block('Phew! Nothing in that door!', null, 'fg=yellow;bg=blue;', ' ', 1);
             $this->player->addExperience($this->levelDetail['experiencePoints'] ?? 0);
 
-            ++$this->level;
+            $this->level++;
 
-        } while ($this->player->isAlive() && $this->advanceLevel($this->level));
+        } while ($this->player->isAlive() && $this->loadLevel($this->level));
     }
 
     protected function initialize()
     {
         $this->showWelcome();
-        $this->restoreSavedGame();
 
-        $this->advanceLevel($this->level ?? 0);
+        if ($this->storage->hasSavedGame()) {
+            $this->restoreSavedGame();
+        }
+
+        $this->loadLevel($this->level ?? 0);
 
         if (empty($this->player)) {
             $this->choosePlayer();
@@ -149,10 +157,6 @@ class Game
      */
     public function restoreSavedGame()
     {
-        if (!$this->storage->hasSavedGame()) {
-            return;
-        }
-
         $restoreGame = $this->io->choice('Saved game found. Would you like to restore it?', ['Yes', 'No']);
         if ($restoreGame === 'No') {
             $this->storage->removeSavedGame();
@@ -162,27 +166,33 @@ class Game
 
         $gameData = $this->storage->getSavedGame();
 
-        $this->level = $gameData['level'];
-
         $this->player = new $gameData['player']['class'];
         $this->player->setExperience($gameData['player']['experience']);
         $this->player->setHealth($gameData['player']['health']);
 
+        $this->level = $gameData['level'];
+
         $this->storage->removeSavedGame();
     }
 
+    /**
+     * Generate the doors for the current level
+     *
+     * @return array
+     * @throws \KamranAhmed\Walkers\Exceptions\InvalidLevelException
+     */
     public function generateDoors()
     {
         $totalDoors = intval($this->levelDetail['doorCount'] ?? 3);
         $walkers    = $this->levelDetail['walkers'] ?? [];
 
+        // There must be some empty doors
         if (count($walkers) >= $totalDoors) {
             throw new InvalidLevelException('Door count must be greater than walker count');
         }
 
         // Create allowed number of doors
         $doors = array_fill(0, $totalDoors, false);
-
         foreach ($walkers as $counter => $walker) {
             $doors[$counter] = new $walker;
         }
@@ -197,9 +207,12 @@ class Game
         return $namedDoors;
     }
 
+    /**
+     * Asks for the player choice out of the
+     * available players
+     */
     public function choosePlayer()
     {
-        // TODO : Empty check
         $players = $this->levelDetail['players'] ?? [];
 
         $choice = $this->io->choice('Chose your player?', array_keys($players));
@@ -216,7 +229,7 @@ class Game
      *
      * @return bool
      */
-    public function advanceLevel(int $level)
+    public function loadLevel(int $level)
     {
         $map = require __DIR__ . '/../config/map.php';
 
@@ -232,12 +245,19 @@ class Game
         return true;
     }
 
+    /**
+     * Shows the game title and welcome message
+     */
     public function showWelcome()
     {
         $this->io->title('The Walking Dead');
         $this->io->text('Welcome to the world of the dead, see if you can ditch your way through the walkers towards the sanctuary.');
     }
 
+    /**
+     * Shows the current progress of the player
+     * in tabular form
+     */
     public function showProgress()
     {
         $this->io->table(

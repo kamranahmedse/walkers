@@ -6,17 +6,17 @@ use KamranAhmed\Walkers\Player\Interfaces\Player;
 use KamranAhmed\Walkers\Walker\Abstracts\BaseWalker;
 
 /**
- * Class Harmless
+ * Class Grouchy
  *
  * @package KamranAhmed\Walkers\Walker
  */
-class HeadLess extends BaseWalker
+class Grouchy extends BaseWalker
 {
     /** @var string */
-    protected $name = 'Headless Walker';
+    protected $name = 'Grouchy Walker';
 
     /** @var int */
-    protected $damage = 0;
+    protected $damage = 30;
 
     public function eat(Player $player)
     {
