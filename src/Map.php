@@ -4,6 +4,7 @@ namespace KamranAhmed\Walkers;
 
 use KamranAhmed\Walkers\Exceptions\InvalidLevelException;
 use KamranAhmed\Walkers\Player\Interfaces\Player;
+use KamranAhmed\Walkers\Storage\Interfaces\GameStorage;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -13,6 +14,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 class Map
 {
+    const SAVE_EXIT = 'Save and Exit';
+
     /** @var int */
     protected $level;
 
@@ -25,19 +28,25 @@ class Map
     /** @var array */
     protected $levelDetail;
 
+    /** @var GameStorage $storage */
+    protected $storage;
+
+    protected $actions = [
+        self::SAVE_EXIT,
+    ];
+
     /**
      * Map constructor.
      *
-     * @param \Symfony\Component\Console\Style\SymfonyStyle $io
-     * @param \KamranAhmed\Walkers\Player\Interfaces\Player $player
-     * @param int                                           $level
+     * @param \Symfony\Component\Console\Style\SymfonyStyle       $io
+     * @param \KamranAhmed\Walkers\Storage\Interfaces\GameStorage $storage
+     *
+     * @throws \KamranAhmed\Walkers\Exceptions\InvalidLevelException
      */
-    public function __construct(SymfonyStyle $io, Player $player = null, $level = 0)
+    public function __construct(SymfonyStyle $io, GameStorage $storage)
     {
-        $this->io     = $io;
-        $this->player = $player;
-
-        $this->advanceLevel($level);
+        $this->io      = $io;
+        $this->storage = $storage;
     }
 
     public function play()
@@ -49,7 +58,15 @@ class Map
 
             $doors = $this->generateDoors();
 
-            $choice = $this->io->choice('Carefully choose the door to enter!', array_keys($doors));
+            $doorNames = array_keys($doors);
+            $choices   = array_merge($doorNames, $this->actions);
+
+            $choice = $this->io->choice('Carefully choose the door to enter!', $choices);
+
+            // If an action was chosen
+            if (in_array($choice, $this->actions)) {
+                $this->performAction($choice);
+            }
 
             // If there was no walker in the door
             if (empty($doors[$choice])) {
@@ -62,16 +79,31 @@ class Map
             }
 
         } while ($this->player->isAlive());
+    }
 
-        // while ($this->player->isAlive()) {
-        // }
+    public function performAction($action)
+    {
+        switch ($action) {
+            case static::SAVE_EXIT:
+                $this->saveGame();
+                $this->io->success('Bye bye ' . $this->player->getName() . '! Walkers will be waiting for you');
+                exit(0);
+        }
+    }
+
+    public function saveGame()
+    {
+        $this->storage->saveGame(
+            $this->player->toArray(),
+            $this->level
+        );
     }
 
     protected function initialize()
     {
-
         if (empty($this->level)) {
             $this->showWelcome();
+            $this->advanceLevel(0);
         }
 
         if (empty($this->player)) {
@@ -153,7 +185,7 @@ class Map
 
     public function showCompletionExit()
     {
-        $this->io->section('Game Complete');
+        $this->io->title('Game Complete');
 
         $this->io->success('Good work ' . $this->player->getName() . '! You have made it alive through the other end');
         $this->io->listing([

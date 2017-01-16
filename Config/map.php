@@ -7,7 +7,7 @@ use KamranAhmed\Walkers\Walker\Deadly;
 use KamranAhmed\Walkers\Walker\Harmless;
 
 return [
-    'levels'          => [
+    'levels' => [
         [
             'doorCount'        => 3,
             'players'          => [
@@ -31,11 +31,6 @@ return [
                 Deadly::class,
             ],
             'experiencePoints' => 10,
-        ],
-    ],
-    'playerInventory' => [
-        GunnerRick::class => [
-
         ],
     ],
 ];

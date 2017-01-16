@@ -46,8 +46,17 @@ abstract class BasePlayer implements Player
         return $this->name;
     }
 
-    public function isAlive()
+    public function isAlive():bool
     {
         return !empty($this->health);
+    }
+
+    public function toArray():array
+    {
+        return [
+            'experience' => $this->getExperience(),
+            'health'     => $this->getHealth(),
+            'class'      => get_class(),
+        ];
     }
 }

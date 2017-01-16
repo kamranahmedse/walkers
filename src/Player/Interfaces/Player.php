@@ -13,7 +13,9 @@ interface Player
 
     public function getName();
 
-    public function isAlive();
+    public function isAlive() : bool;
 
     public function addExperience(int $points = 10);
+
+    public function toArray() : array;
 }
