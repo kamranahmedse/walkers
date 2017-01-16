@@ -4,7 +4,7 @@ use KamranAhmed\Walkers\Player\GunnerRick;
 use KamranAhmed\Walkers\Player\KidCarl;
 use KamranAhmed\Walkers\Player\OldHershel;
 use KamranAhmed\Walkers\Walker\Deadly;
-use KamranAhmed\Walkers\Walker\Harmless;
+use KamranAhmed\Walkers\Walker\HeadLess;
 
 return [
     'levels' => [
@@ -15,9 +15,9 @@ return [
                 'Carl - The Kid'    => KidCarl::class,
             ],
             'walkers'          => [
-                Harmless::class,
+                HeadLess::class,
             ],
-            'experiencePoints' => 0,
+            'experiencePoints' => 10,
         ],
         [
             'doorCount'        => 5,
@@ -27,10 +27,10 @@ return [
                 'Hershel - Old Guy' => OldHershel::class,
             ],
             'walkers'          => [
-                Harmless::class,
+                HeadLess::class,
                 Deadly::class,
             ],
-            'experiencePoints' => 10,
+            'experiencePoints' => 20,
         ],
     ],
 ];

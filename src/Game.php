@@ -13,7 +13,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *
  * @package KamranAhmed\Walkers
  */
-class Map
+class Game
 {
     const SAVE_EXIT = 'Save and Exit';
 
@@ -53,7 +53,45 @@ class Map
     public function play()
     {
         $this->initialize();
+        $this->gameLoop();
+        $this->endGame();
+    }
 
+    public function performAction($action)
+    {
+        switch ($action) {
+            case static::SAVE_EXIT:
+                $this->saveGame();
+                $this->io->success('Bye bye ' . $this->player->getName() . '! Walkers will be waiting for you');
+                exit(0);
+        }
+    }
+
+    public function saveGame()
+    {
+        $this->storage->saveGame(
+            $this->player->toArray(),
+            $this->level
+        );
+    }
+
+    public function endGame()
+    {
+        if ($this->player->isAlive()) {
+            $this->io->success('Good work ' . $this->player->getName() . '! You have made it alive through the other end');
+        } else {
+            $this->io->block('Rest in peace ' . $this->player->getName(), ' ', 'fg=black;bg=green', ' ', true);
+        }
+
+        $this->showProgress();
+        exit(0);
+    }
+
+    /**
+     * @throws \KamranAhmed\Walkers\Exceptions\InvalidLevelException
+     */
+    public function gameLoop()
+    {
         do {
             $this->io->section('Level ' . ($this->level + 1));
 
@@ -74,35 +112,14 @@ class Map
             // If there was no walker in the door
             if (empty($doors[$choice])) {
                 $this->io->block('Phew! Nothing in that door!', null, 'fg=yellow;bg=blue;', ' ', 1);
-                $this->advanceLevel(++$this->level);
-                continue;
             } else {
                 /** @var Walker $walker */
                 $walker = $doors[$choice];
-
-                $this->io->block($walker->getName() . ' Ahead!', null, 'fg=white;bg=red', ' ');
                 $walker->eat($this->player);
+                $this->io->block('Bitten by ' . $walker->getName() . '! Health decreased to ' . $this->player->getHealth(), null, 'fg=white;bg=red', ' ', true);
             }
 
-        } while ($this->player->isAlive());
-    }
-
-    public function performAction($action)
-    {
-        switch ($action) {
-            case static::SAVE_EXIT:
-                $this->saveGame();
-                $this->io->success('Bye bye ' . $this->player->getName() . '! Walkers will be waiting for you');
-                exit(0);
-        }
-    }
-
-    public function saveGame()
-    {
-        $this->storage->saveGame(
-            $this->player->toArray(),
-            $this->level
-        );
+        } while ($this->player->isAlive() && $this->advanceLevel(++$this->level));
     }
 
     protected function initialize()
@@ -160,41 +177,37 @@ class Map
         $this->io->title('Godspeed ' . $this->player->getName() . '!');
     }
 
-    public function advanceLevel(int $nextLevel)
+    /**
+     * Advances the game to given level
+     *
+     * @param int $level
+     *
+     * @return bool
+     */
+    public function advanceLevel(int $level)
     {
         $map = require __DIR__ . '/../config/map.php';
 
-        if (empty($map['levels'][$nextLevel])) {
-
-            // If it was level `0` and we even don't have that
-            if (empty($nextLevel)) {
-                throw new InvalidLevelException('Specified level does not exist ' . $nextLevel);
-            }
-
-            // Any other level and it doesn't exist means end has been reached
-            $this->showCompletionExit();
+        // If the next level does not exist
+        if (empty($map['levels'][$level])) {
+            return false;
         }
 
-        $this->level       = $nextLevel;
-        $this->levelDetail = $map['levels'][$nextLevel];
+        // Set the next level details
+        $this->level       = $level;
+        $this->levelDetail = $map['levels'][$level];
 
         if (!empty($this->player)) {
             $this->player->addExperience($this->levelDetail['experiencePoints'] ?? 0);
         }
+
+        return true;
     }
 
     public function showWelcome()
     {
         $this->io->title('The Walking Dead');
         $this->io->text('Welcome to the world of the dead, see if you can ditch your way through the walkers towards the sanctuary.');
-    }
-
-    public function showCompletionExit()
-    {
-        $this->io->success('Good work ' . $this->player->getName() . '! You have made it alive through the other end');
-        $this->showProgress();
-
-        exit(0);
     }
 
     public function showProgress()

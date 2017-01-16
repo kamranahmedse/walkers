@@ -38,7 +38,7 @@ class Runner extends Command
         $io          = new SymfonyStyle($input, $output);
         $jsonStorage = new JsonStorage();
 
-        $map = new Map($io, $jsonStorage);
+        $map = new Game($io, $jsonStorage);
         $map->play();
 
         return 0;

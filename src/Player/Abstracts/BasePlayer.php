@@ -61,7 +61,7 @@ abstract class BasePlayer implements Player
         return [
             'experience' => $this->getExperience(),
             'health'     => $this->getHealth(),
-            'class'      => get_class(),
+            'class'      => get_called_class(),
         ];
     }
 }

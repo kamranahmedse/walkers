@@ -13,8 +13,11 @@ use KamranAhmed\Walkers\Storage\Interfaces\GameStorage;
 class JsonStorage implements GameStorage
 {
     protected $savePath = __DIR__ . '/../../storage';
-    protected $dataFile = 'game-data.json';
+    protected $dataFile = 'game-data.wd';
 
+    /**
+     * @throws \KamranAhmed\Walkers\Exceptions\InvalidStoragePath
+     */
     public function initialize()
     {
         if (!is_dir($this->savePath) || !is_writable($this->dataFile)) {
@@ -22,6 +25,10 @@ class JsonStorage implements GameStorage
         }
     }
 
+    /**
+     * @param array $player
+     * @param int   $level
+     */
     public function saveGame(array $player, int $level)
     {
         $gameData = [
@@ -34,9 +41,16 @@ class JsonStorage implements GameStorage
         file_put_contents($dataFile, $this->encryptGameData($gameData));
     }
 
+    /**
+     * @param array $gameData
+     *
+     * @return string
+     */
     protected function encryptGameData(array $gameData) : string
     {
-        return json_encode($gameData);
+        $gameData = json_encode($gameData);
+
+        return str_rot13(base64_encode(str_rot13($gameData)));
     }
 
     public function restoreGame()

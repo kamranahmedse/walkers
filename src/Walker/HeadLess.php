@@ -10,7 +10,7 @@ use KamranAhmed\Walkers\Walker\Abstracts\BaseWalker;
  *
  * @package KamranAhmed\Walkers\Walker
  */
-class Harmless extends BaseWalker
+class HeadLess extends BaseWalker
 {
     /** @var string */
     protected $name = 'Headless Walker';
