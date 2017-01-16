@@ -2,7 +2,9 @@
 
 namespace KamranAhmed\Walkers\Storage;
 
+use KamranAhmed\Walkers\Exceptions\InvalidGameData;
 use KamranAhmed\Walkers\Exceptions\InvalidStoragePath;
+use KamranAhmed\Walkers\Exceptions\NoSavedGame;
 use KamranAhmed\Walkers\Storage\Interfaces\GameStorage;
 
 /**
@@ -26,6 +28,26 @@ class JsonStorage implements GameStorage
     }
 
     /**
+     * @return string
+     */
+    protected function getDataFile()
+    {
+        return rtrim($this->savePath, '/') . '/' . $this->dataFile;
+    }
+
+    /**
+     * Removes the saved game
+     */
+    public function removeSavedGame()
+    {
+        if ($this->hasSavedGame()) {
+            unlink($this->getDataFile());
+        }
+
+        return;
+    }
+
+    /**
      * @param array $player
      * @param int   $level
      */
@@ -36,9 +58,9 @@ class JsonStorage implements GameStorage
             'level'  => $level,
         ];
 
-        $dataFile = rtrim($this->savePath, '/') . '/' . $this->dataFile;
+        $dataFile = $this->getDataFile();
 
-        file_put_contents($dataFile, $this->encryptGameData($gameData));
+        file_put_contents($dataFile, $this->encodeGameData($gameData));
     }
 
     /**
@@ -46,20 +68,58 @@ class JsonStorage implements GameStorage
      *
      * @return string
      */
-    protected function encryptGameData(array $gameData) : string
+    protected function encodeGameData(array $gameData) : string
     {
         $gameData = json_encode($gameData);
 
         return str_rot13(base64_encode(str_rot13($gameData)));
     }
 
-    public function restoreGame()
+    /**
+     * @param string $gameData
+     *
+     * @return array
+     * @throws \KamranAhmed\Walkers\Exceptions\InvalidGameData
+     */
+    protected function decodeGameData(string $gameData) : array
     {
-        // TODO: Implement restoreGame() method.
+        $jsonData = str_rot13(base64_decode(str_rot13($gameData)));
+        $gameData = json_decode($jsonData, true);
+
+        if (
+            empty($gameData) ||
+            empty($gameData['player']) ||
+            !is_int($gameData['level'])
+        ) {
+            throw new InvalidGameData('Invalid game data found');
+        }
+
+        return $gameData;
     }
 
+    /**
+     * @return array
+     * @throws \KamranAhmed\Walkers\Exceptions\InvalidGameData
+     * @throws \KamranAhmed\Walkers\Exceptions\NoSavedGame
+     */
+    public function getSavedGame() : array
+    {
+        if (!$this->hasSavedGame()) {
+            throw new NoSavedGame('No saved game found');
+        }
+
+        $gameData = file_get_contents($this->getDataFile());
+
+        return $this->decodeGameData($gameData);
+    }
+
+    /**
+     * @return bool
+     */
     public function hasSavedGame() : bool
     {
-        // TODO: Implement hasSavedGame() method.
+        $dataFile = $this->getDataFile();
+
+        return file_exists($dataFile) && is_readable($dataFile);
     }
 }

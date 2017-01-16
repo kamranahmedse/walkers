@@ -11,6 +11,8 @@ interface Player
 
     public function getHealth();
 
+    public function setExperience(int $experience);
+
     public function getExperience();
 
     public function getName();

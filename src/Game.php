@@ -5,7 +5,6 @@ namespace KamranAhmed\Walkers;
 use KamranAhmed\Walkers\Exceptions\InvalidLevelException;
 use KamranAhmed\Walkers\Player\Interfaces\Player;
 use KamranAhmed\Walkers\Storage\Interfaces\GameStorage;
-use KamranAhmed\Walkers\Walker\Interfaces\Walker;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -109,25 +108,30 @@ class Game
                 $this->performAction($choice);
             }
 
-            // If there was no walker in the door
-            if (empty($doors[$choice])) {
-                $this->io->block('Phew! Nothing in that door!', null, 'fg=yellow;bg=blue;', ' ', 1);
-            } else {
-                /** @var Walker $walker */
+            // If the door had "Walker" in it. Get the player
+            // bitten by it and reload the doors.
+            if (!empty($doors[$choice])) {
                 $walker = $doors[$choice];
                 $walker->eat($this->player);
                 $this->io->block('Bitten by ' . $walker->getName() . '! Health decreased to ' . $this->player->getHealth(), null, 'fg=white;bg=red', ' ', true);
+
+                continue;
             }
 
-        } while ($this->player->isAlive() && $this->advanceLevel(++$this->level));
+            $this->io->block('Phew! Nothing in that door!', null, 'fg=yellow;bg=blue;', ' ', 1);
+            $this->player->addExperience($this->levelDetail['experiencePoints'] ?? 0);
+
+            ++$this->level;
+
+        } while ($this->player->isAlive() && $this->advanceLevel($this->level));
     }
 
     protected function initialize()
     {
-        if (empty($this->level)) {
-            $this->showWelcome();
-            $this->advanceLevel(0);
-        }
+        $this->showWelcome();
+        $this->restoreSavedGame();
+
+        $this->advanceLevel($this->level ?? 0);
 
         if (empty($this->player)) {
             $this->choosePlayer();
@@ -137,6 +141,34 @@ class Game
         $this->io->text('Carefully choose a door while praying that you do not come across a Walker!');
 
         $this->io->newLine();
+    }
+
+    /**
+     * Restores the saved game if available and
+     * the choice was made to restore.
+     */
+    public function restoreSavedGame()
+    {
+        if (!$this->storage->hasSavedGame()) {
+            return;
+        }
+
+        $restoreGame = $this->io->choice('Saved game found. Would you like to restore it?', ['Yes', 'No']);
+        if ($restoreGame === 'No') {
+            $this->storage->removeSavedGame();
+
+            return;
+        }
+
+        $gameData = $this->storage->getSavedGame();
+
+        $this->level = $gameData['level'];
+
+        $this->player = new $gameData['player']['class'];
+        $this->player->setExperience($gameData['player']['experience']);
+        $this->player->setHealth($gameData['player']['health']);
+
+        $this->storage->removeSavedGame();
     }
 
     public function generateDoors()
@@ -196,10 +228,6 @@ class Game
         // Set the next level details
         $this->level       = $level;
         $this->levelDetail = $map['levels'][$level];
-
-        if (!empty($this->player)) {
-            $this->player->addExperience($this->levelDetail['experiencePoints'] ?? 0);
-        }
 
         return true;
     }

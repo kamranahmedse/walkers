@@ -13,7 +13,9 @@ interface GameStorage
 
     public function saveGame(array $player, int $level);
 
-    public function restoreGame();
+    public function getSavedGame();
+
+    public function removeSavedGame();
 
     public function hasSavedGame() : bool;
 }

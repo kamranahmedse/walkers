@@ -36,6 +36,11 @@ abstract class BasePlayer implements Player
         return $this->experience;
     }
 
+    public function setExperience(int $experience)
+    {
+        $this->experience = $experience;
+    }
+
     public function addExperience(int $points = 10)
     {
         $this->experience += $points;
