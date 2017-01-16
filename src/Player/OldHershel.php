@@ -12,4 +12,6 @@ use KamranAhmed\Walkers\Player\Abstracts\BasePlayer;
 class OldHershel extends BasePlayer
 {
     protected $name = 'Hershel';
+
+    protected $health = 50;
 }

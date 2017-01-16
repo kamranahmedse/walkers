@@ -2,6 +2,8 @@
 
 use KamranAhmed\Walkers\Player\GunnerRick;
 use KamranAhmed\Walkers\Player\KidCarl;
+use KamranAhmed\Walkers\Player\OldHershel;
+use KamranAhmed\Walkers\Walker\Deadly;
 use KamranAhmed\Walkers\Walker\Harmless;
 
 return [
@@ -14,6 +16,18 @@ return [
             ],
             'walkers'   => [
                 Harmless::class,
+            ],
+        ],
+        [
+            'doorCount' => 5,
+            'players'   => [
+                'Rick - The Father' => GunnerRick::class,
+                'Carl - The Kid'    => KidCarl::class,
+                'Hershel - Old Guy' => OldHershel::class,
+            ],
+            'walkers'   => [
+                Harmless::class,
+                Deadly::class,
             ],
         ],
     ],

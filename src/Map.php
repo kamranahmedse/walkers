@@ -44,18 +44,16 @@ class Map
     {
         $this->initialize();
 
-        $this->io->text('You will be shown some doors! Carefully choose a door while praying that you do not come across a Walker!');
-        $this->io->text('Say your prayers and press any key to continue ..');
-
-        fgetc(STDIN);
-
         do {
+            $this->io->section('Level ' . ($this->level + 1));
+
             $doors = $this->generateDoors();
 
             $choice = $this->io->choice('Carefully choose the door to enter!', array_keys($doors));
 
-            // If there was nothing in the door
+            // If there was no walker in the door
             if (empty($doors[$choice])) {
+                $this->io->text('Well that was close!');
                 $this->populateLevel(++$this->level);
                 continue;
             } else {
@@ -71,6 +69,7 @@ class Map
 
     protected function initialize()
     {
+
         if (empty($this->level)) {
             $this->showWelcome();
         }
@@ -78,6 +77,11 @@ class Map
         if (empty($this->player)) {
             $this->choosePlayer();
         }
+
+        $this->io->text('You will be shown some doors! Carefully choose a door while praying that you do not come across a Walker!');
+        $this->io->text('Say your prayers and press any key to continue ..');
+
+        fgetc(STDIN);
     }
 
     public function generateDoors()
