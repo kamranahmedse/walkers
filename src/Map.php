@@ -37,7 +37,7 @@ class Map
         $this->io     = $io;
         $this->player = $player;
 
-        $this->populateLevel($level);
+        $this->advanceLevel($level);
     }
 
     public function play()
@@ -53,8 +53,8 @@ class Map
 
             // If there was no walker in the door
             if (empty($doors[$choice])) {
-                $this->io->text('Well that was close!');
-                $this->populateLevel(++$this->level);
+                $this->io->block('Well that was close!', null, 'fg=yellow;');
+                $this->advanceLevel(++$this->level);
                 continue;
             } else {
                 $this->io->warning('Woah! You have came across a zombie');
@@ -122,23 +122,27 @@ class Map
         $this->io->title('Godspeed ' . $this->player->getName() . '!');
     }
 
-    public function populateLevel(int $level)
+    public function advanceLevel(int $nextLevel)
     {
         $map = require __DIR__ . '/../config/map.php';
 
-        if (empty($map['levels'][$level])) {
+        if (empty($map['levels'][$nextLevel])) {
 
             // If it was level `0` and we even don't have that
-            if (empty($level)) {
-                throw new InvalidLevelException('Specified level does not exist ' . $level);
+            if (empty($nextLevel)) {
+                throw new InvalidLevelException('Specified level does not exist ' . $nextLevel);
             }
 
             // Any other level and it doesn't exist means end has been reached
             $this->showCompletionExit();
         }
 
-        $this->level       = $level;
-        $this->levelDetail = $map['levels'][$level];
+        $this->level       = $nextLevel;
+        $this->levelDetail = $map['levels'][$nextLevel];
+
+        if (!empty($this->player)) {
+            $this->player->addExperience($this->levelDetail['experiencePoints'] ?? 0);
+        }
     }
 
     public function showWelcome()
@@ -149,7 +153,13 @@ class Map
 
     public function showCompletionExit()
     {
+        $this->io->section('Game Complete');
+
         $this->io->success('Good work ' . $this->player->getName() . '! You have made it alive through the other end');
+        $this->io->listing([
+            'Experience: ' . $this->player->getExperience(),
+            'Health: ' . $this->player->getHealth(),
+        ]);
         exit();
     }
 }

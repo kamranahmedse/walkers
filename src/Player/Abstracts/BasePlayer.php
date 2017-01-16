@@ -17,6 +17,9 @@ abstract class BasePlayer implements Player
     /** @var string */
     protected $name;
 
+    /** @var int */
+    protected $experience = 0;
+
     /**
      * @return int
      */
@@ -25,9 +28,17 @@ abstract class BasePlayer implements Player
         return $this->health;
     }
 
-    public function setName($name)
+    /**
+     * @return int
+     */
+    public function getExperience()
     {
-        $this->name = $name;
+        return $this->experience;
+    }
+
+    public function addExperience(int $points = 10)
+    {
+        $this->experience += $points;
     }
 
     public function getName()
