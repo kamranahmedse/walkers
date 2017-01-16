@@ -192,6 +192,7 @@ class Map
             'Experience: ' . $this->player->getExperience(),
             'Health: ' . $this->player->getHealth(),
         ]);
-        exit();
+
+        exit(0);
     }
 }
