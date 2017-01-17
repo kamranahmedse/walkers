@@ -99,9 +99,9 @@ class Game
     public function endGame()
     {
         if ($this->player->isAlive()) {
-            $this->console->printSuccess('Good work ' . $this->player->getName() . '! You have made it alive through the other end');
+            $this->console->printSuccess('Good work ' . $this->player->getName() . '! You have made it alive to the Sanctuary');
         } else {
-            $this->console->printDanger('Rest in peace ' . $this->player->getName());
+            $this->console->printDanger('*Rest in peace ' . $this->player->getName() . '! You will be remembered*');
         }
 
         $this->showProgress();
@@ -117,7 +117,7 @@ class Game
             $this->console->printTitle('Level ' . ($this->map->getCurrentLevel()));
             $this->showProgress();
 
-            $doors = $this->map->getDoors();
+            $doors = $this->map->getDoors(true);
 
             $doorNames = array_keys($doors);
             $choices   = array_merge($doorNames, $this->actions);
@@ -163,6 +163,8 @@ class Game
     {
         $this->showWelcome();
 
+        // Restore game if necessary or load the
+        // first level while asking for player
         if ($this->storage->hasSavedGame() && $this->shouldRestore()) {
             $this->restoreSavedGame();
         } else {
@@ -189,7 +191,7 @@ class Game
     {
         $restoreGame = $this->console->askChoice('Saved game found. Would you like to restore it?', ['Yes', 'No']);
 
-        return $restoreGame === 'No';
+        return $restoreGame === 'Yes';
     }
 
     /**

@@ -118,11 +118,20 @@ class Map
     /**
      * Gets the doors for current level
      *
+     * @param bool $reShuffle
+     *
      * @return array
      */
-    public function getDoors()
+    public function getDoors($reShuffle = false)
     {
-        return $this->doors;
+        if (!$reShuffle) {
+            return $this->doors;
+        }
+
+        $doors = array_values($this->doors);
+        shuffle($doors);
+
+        return $this->nameDoors($doors);
     }
 
     /**
@@ -162,6 +171,18 @@ class Map
         // Shuffle the doors to randomize the placement
         shuffle($doors);
 
+        return $this->nameDoors($doors);
+    }
+
+    /**
+     * Names the doors
+     *
+     * @param array $doors
+     *
+     * @return array
+     */
+    public function nameDoors(array $doors)
+    {
         $namedDoors = [];
 
         // Generate named doors
