@@ -3,9 +3,9 @@
 namespace KamranAhmed\Walkers;
 
 use KamranAhmed\Walkers\Console\Interfaces\ConsoleInterface;
-use KamranAhmed\Walkers\Exceptions\InvalidLevelException;
 use KamranAhmed\Walkers\Player\Interfaces\Player;
 use KamranAhmed\Walkers\Storage\Interfaces\GameStorage;
+use KamranAhmed\Walkers\Walker\Interfaces\Walker;
 
 /**
  * Class Map
@@ -14,17 +14,14 @@ use KamranAhmed\Walkers\Storage\Interfaces\GameStorage;
  */
 class Game
 {
-    /** @var int */
-    protected $level;
+    /** @var \KamranAhmed\Walkers\Map */
+    protected $map;
 
     /** @var ConsoleInterface */
     protected $console;
 
     /** @var Player */
     protected $player;
-
-    /** @var array */
-    protected $levelDetail;
 
     /** @var GameStorage $storage */
     protected $storage;
@@ -42,14 +39,20 @@ class Game
      *
      * @param \KamranAhmed\Walkers\Console\Interfaces\ConsoleInterface $console
      * @param \KamranAhmed\Walkers\Storage\Interfaces\GameStorage      $storage
-     *
+     * @param \KamranAhmed\Walkers\Map                                 $map
      */
-    public function __construct(ConsoleInterface $console, GameStorage $storage)
+    public function __construct(ConsoleInterface $console, GameStorage $storage, Map $map)
     {
         $this->console = $console;
         $this->storage = $storage;
+        $this->map     = $map;
     }
 
+    /**
+     * Initializes the game i.e. basic configuration and the game loop
+     *
+     * @return void
+     */
     public function play()
     {
         $this->initialize();
@@ -57,6 +60,13 @@ class Game
         $this->endGame();
     }
 
+    /**
+     * Performs the specified action, if possible
+     *
+     * @param $action
+     *
+     * @return void
+     */
     public function performAction($action)
     {
         switch ($action) {
@@ -70,14 +80,22 @@ class Game
         }
     }
 
+    /**
+     * Saves the game to storage
+     *
+     * @return void
+     */
     public function saveGame()
     {
         $this->storage->saveGame(
             $this->player->toArray(),
-            $this->level
+            $this->map->getCurrentLevel()
         );
     }
 
+    /**
+     * Ends the game while providing the relevant
+     */
     public function endGame()
     {
         if ($this->player->isAlive()) {
@@ -96,11 +114,10 @@ class Game
     public function gameLoop()
     {
         do {
-            $this->console->printTitle('Level ' . ($this->level + 1));
-
+            $this->console->printTitle('Level ' . ($this->map->getCurrentLevel()));
             $this->showProgress();
 
-            $doors = $this->generateDoors();
+            $doors = $this->map->getDoors();
 
             $doorNames = array_keys($doors);
             $choices   = array_merge($doorNames, $this->actions);
@@ -115,6 +132,7 @@ class Game
             // If the door had "Walker" in it. Get the player
             // bitten by it and reload the doors.
             if (!empty($doors[$choice])) {
+                /** @var Walker $walker */
                 $walker = $doors[$choice];
                 $walker->eat($this->player);
 
@@ -124,26 +142,37 @@ class Game
             }
 
             $this->console->printInfo('Phew! Nothing in that door!');
-            $this->player->addExperience($this->levelDetail['experiencePoints'] ?? 0);
+            $this->player->addExperience($this->map->getCurrentLevelExperience());
 
-            $this->level++;
+            // Advance to next level if possible, otherwise
+            if ($this->map->canAdvance()) {
+                $this->map->advance();
+            } else {
+                return;
+            }
 
-        } while ($this->player->isAlive() && $this->loadLevel($this->level));
+        } while ($this->player->isAlive());
     }
 
+    /**
+     * Initializes the game
+     *
+     * @return void
+     */
     protected function initialize()
     {
         $this->showWelcome();
 
-        if ($this->storage->hasSavedGame()) {
+        if ($this->storage->hasSavedGame() && $this->shouldRestore()) {
             $this->restoreSavedGame();
-        }
-
-        $this->loadLevel($this->level ?? 0);
-
-        if (empty($this->player)) {
+        } else {
+            $this->map->loadLevel(0);
             $this->choosePlayer();
         }
+
+        // Remove the saved game if any; because user
+        // has started playing if it was available
+        $this->storage->removeSavedGame();
 
         $this->console->print('You will be shown some doors!');
         $this->console->print('Carefully choose a door while praying that you do not come across a Walker!');
@@ -152,59 +181,37 @@ class Game
     }
 
     /**
-     * Restores the saved game if available and
-     * the choice was made to restore.
+     * Asks the user to see if the game should be restored or not
+     *
+     * @return bool
      */
-    public function restoreSavedGame()
+    protected function shouldRestore()
     {
         $restoreGame = $this->console->askChoice('Saved game found. Would you like to restore it?', ['Yes', 'No']);
-        if ($restoreGame === 'No') {
-            $this->storage->removeSavedGame();
 
-            return;
-        }
-
-        $gameData = $this->storage->getSavedGame();
-
-        $this->player = new $gameData['player']['class'];
-        $this->player->setExperience($gameData['player']['experience']);
-        $this->player->setHealth($gameData['player']['health']);
-
-        $this->level = $gameData['level'];
-
-        $this->storage->removeSavedGame();
+        return $restoreGame === 'No';
     }
 
     /**
-     * Generate the doors for the current level
+     * Restores the saved game if available and
+     * the choice was made to restore.
      *
-     * @return array
-     * @throws \KamranAhmed\Walkers\Exceptions\InvalidLevelException
+     * @return void
      */
-    public function generateDoors()
+    protected function restoreSavedGame()
     {
-        $totalDoors = intval($this->levelDetail['doorCount'] ?? 3);
-        $walkers    = $this->levelDetail['walkers'] ?? [];
+        $gameData = $this->storage->getSavedGame();
 
-        // There must be some empty doors
-        if (count($walkers) >= $totalDoors) {
-            throw new InvalidLevelException('Door count must be greater than walker count');
-        }
+        // Set the player information
+        $this->player = new $gameData['player']['class'];
 
-        // Create allowed number of doors
-        $doors = array_fill(0, $totalDoors, false);
-        foreach ($walkers as $counter => $walker) {
-            $doors[$counter] = new $walker;
-        }
+        $this->player->setExperience($gameData['player']['experience']);
+        $this->player->setHealth($gameData['player']['health']);
 
-        shuffle($doors);
+        // Load the specified map level
+        $this->map->loadLevel($gameData['level']);
 
-        $namedDoors = [];
-        foreach ($doors as $counter => $door) {
-            $namedDoors['Door # ' . $counter] = $door;
-        }
-
-        return $namedDoors;
+        $this->storage->removeSavedGame();
     }
 
     /**
@@ -213,36 +220,12 @@ class Game
      */
     public function choosePlayer()
     {
-        $players = $this->levelDetail['players'] ?? [];
-
-        $choice = $this->console->askChoice('Chose your player?', array_keys($players));
+        $players = $this->map->getPlayers();
+        $choice  = $this->console->askChoice('Chose your player?', array_keys($players));
 
         $this->player = new $players[$choice];
 
         $this->console->printTitle('Godspeed ' . $this->player->getName() . '!');
-    }
-
-    /**
-     * Advances the game to given level
-     *
-     * @param int $level
-     *
-     * @return bool
-     */
-    public function loadLevel(int $level)
-    {
-        $map = require __DIR__ . '/../config/map.php';
-
-        // If the next level does not exist
-        if (empty($map['levels'][$level])) {
-            return false;
-        }
-
-        // Set the next level details
-        $this->level       = $level;
-        $this->levelDetail = $map['levels'][$level];
-
-        return true;
     }
 
     /**
@@ -263,7 +246,7 @@ class Game
         $this->console->printTable(
             ['Level', 'Experience', 'Health'],
             [
-                [$this->level + 1, $this->player->getExperience(), $this->player->getHealth()],
+                [$this->map->getCurrentLevel(), $this->player->getExperience(), $this->player->getHealth()],
             ]
         );
     }
