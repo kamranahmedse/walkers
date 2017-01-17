@@ -157,8 +157,10 @@ class Game
             $this->console->printTitle('Level ' . ($this->map->getCurrentLevel()));
             $this->showProgress();
 
-            $doors  = $this->getDoorMenu();
-            $choice = $this->console->askChoice('Carefully choose the door to enter!', $doors);
+            $doors   = $this->map->getDoors(true);
+            $choices = $this->generateDoorMenu($doors);
+
+            $choice = $this->console->askChoice('Carefully choose the door to enter!', $choices);
 
             // Perform the menu action
             if ($this->isMenuAction($choice)) {
@@ -204,12 +206,12 @@ class Game
     /**
      * Returns the doors with the menu items
      *
+     * @param array $doors
+     *
      * @return array
      */
-    public function getDoorMenu()
+    public function generateDoorMenu(array $doors)
     {
-        $doors = $this->map->getDoors(true);
-
         $doorNames = array_keys($doors);
 
         return array_merge($doorNames, self::MENU_ACTIONS);
