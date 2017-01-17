@@ -30,7 +30,7 @@ class PlayerTest extends PHPUnit_Framework_TestCase
 
         $player->setHealth(23);
         $this->assertEquals(23, $player->getHealth());
-        
+
         $this->assertTrue($player->isAlive());
     }
 
@@ -60,6 +60,20 @@ class PlayerTest extends PHPUnit_Framework_TestCase
 
         $player->setName($name);
         $this->assertEquals($name, $player->getName());
+    }
+
+    /**
+     * @dataProvider playersProvider
+     *
+     * @param \KamranAhmed\Walkers\Player\Interfaces\Player $player
+     */
+    public function testCanGetPlayerArray(Player $player)
+    {
+        $playerArr = $player->toArray();
+
+        $this->assertEquals($player->getExperience(), $playerArr['experience']);
+        $this->assertEquals($player->getHealth(), $playerArr['health']);
+        $this->assertEquals(get_class($player), $playerArr['class']);
     }
 
     public function playersProvider()
