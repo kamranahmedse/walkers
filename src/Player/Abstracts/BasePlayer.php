@@ -12,7 +12,7 @@ use KamranAhmed\Walkers\Player\Interfaces\Player;
 abstract class BasePlayer implements Player
 {
     /** @var int */
-    protected $health;
+    protected $health = 0;
 
     /** @var string */
     protected $name;
@@ -21,11 +21,37 @@ abstract class BasePlayer implements Player
     protected $experience = 0;
 
     /**
-     * @return int
+     * @param int $points
+     *
+     * @return void
      */
-    public function getHealth() : int
+    public function addExperience(int $points = 10)
     {
-        return $this->health;
+        $this->experience += $points;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName() : string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName(string $name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAlive() : bool
+    {
+        return !empty($this->health);
     }
 
     /**
@@ -47,29 +73,11 @@ abstract class BasePlayer implements Player
     }
 
     /**
-     * @param int $points
-     *
-     * @return void
+     * @return int
      */
-    public function addExperience(int $points = 10)
+    public function getHealth() : int
     {
-        $this->experience += $points;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName() : string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isAlive() : bool
-    {
-        return !empty($this->health);
+        return $this->health;
     }
 
     /**

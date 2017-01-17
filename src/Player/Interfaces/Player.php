@@ -32,6 +32,13 @@ interface Player
     public function getExperience() : int;
 
     /**
+     * @param string $name
+     *
+     * @return void
+     */
+    public function setName(string $name);
+
+    /**
      * @return string
      */
     public function getName() : string;
