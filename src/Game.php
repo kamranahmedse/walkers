@@ -29,7 +29,7 @@ class Game
     const SAVE_EXIT = 'Save and Exit';
     const EXIT      = 'Exit';
 
-    protected $actions = [
+    protected $menuActions = [
         self::SAVE_EXIT,
         self::EXIT,
     ];
@@ -117,41 +117,69 @@ class Game
             $this->console->printTitle('Level ' . ($this->map->getCurrentLevel()));
             $this->showProgress();
 
-            $doors = $this->map->getDoors(true);
+            $doors  = $this->getDoorMenu();
+            $choice = $this->console->askChoice('Carefully choose the door to enter!', $doors);
 
-            $doorNames = array_keys($doors);
-            $choices   = array_merge($doorNames, $this->actions);
-
-            $choice = $this->console->askChoice('Carefully choose the door to enter!', $choices);
-
-            // If an action was chosen
-            if (in_array($choice, $this->actions)) {
+            // Perform the menu action
+            if ($this->isMenuAction($choice)) {
                 $this->performAction($choice);
             }
-
-            // If the door had "Walker" in it. Get the player
-            // bitten by it and reload the doors.
-            if (!empty($doors[$choice])) {
-                /** @var Walker $walker */
-                $walker = $doors[$choice];
-                $walker->eat($this->player);
-
-                $this->console->printDanger('Bitten by ' . $walker->getName() . '! Health decreased to ' . $this->player->getHealth());
-
-                continue;
+            // Door had walker in it?
+            // Get the player bitten continue again to show the current level
+            else if ($this->isWalkerDoor($doors, $choice)) {
+                $doors[$choice]->eat($this->player);
+                $this->console->printDanger('Bitten by ' . $doors[$choice]->getName() . '! Health decreased to ' . $this->player->getHealth());
             }
+            // Door does not have any walker
+            // Add the experience and advance to next level
+            else {
+                $this->console->printInfo('Phew! Nothing in that door!');
+                $this->player->addExperience($this->map->getCurrentLevelExperience());
 
-            $this->console->printInfo('Phew! Nothing in that door!');
-            $this->player->addExperience($this->map->getCurrentLevelExperience());
+                // End the game loop if no level ahead
+                if (!$this->map->canAdvance()) {
+                    return;
+                }
 
-            // Advance to next level if possible, otherwise
-            if ($this->map->canAdvance()) {
                 $this->map->advance();
-            } else {
-                return;
             }
 
         } while ($this->player->isAlive());
+    }
+
+    /**
+     * @param array  $doors
+     * @param string $door
+     *
+     * @return bool
+     */
+    public function isWalkerDoor(array $doors, string $door) : bool
+    {
+        return !empty($doors[$door]) && ($doors[$door] instanceof Walker);
+    }
+
+    /**
+     * Returns the doors with the menu items
+     *
+     * @return array
+     */
+    public function getDoorMenu()
+    {
+        $doors = $this->map->getDoors(true);
+
+        $doorNames = array_keys($doors);
+
+        return array_merge($doorNames, $this->menuActions);
+    }
+
+    /**
+     * @param $choice
+     *
+     * @return bool
+     */
+    protected function isMenuAction($choice) : bool
+    {
+        return in_array($choice, $this->menuActions);
     }
 
     /**

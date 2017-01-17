@@ -17,16 +17,8 @@ abstract class BaseWalker implements Walker
     /**
      * @return string
      */
-    public function getName()
+    public function getName() : string
     {
         return $this->name;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isAlive()
-    {
-        return !empty($this->health);
     }
 }

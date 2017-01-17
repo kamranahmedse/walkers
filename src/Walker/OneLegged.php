@@ -18,6 +18,11 @@ class OneLegged extends BaseWalker
     /** @var int */
     protected $damage = 5;
 
+    /**
+     * @param \KamranAhmed\Walkers\Player\Interfaces\Player $player
+     *
+     * @return void
+     */
     public function eat(Player $player)
     {
         $player->setHealth($player->getHealth() - $this->damage);

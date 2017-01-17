@@ -19,6 +19,7 @@ class JsonStorage implements GameStorage
 
     /**
      * @throws \KamranAhmed\Walkers\Exceptions\InvalidStoragePath
+     * @return void
      */
     public function initialize()
     {
@@ -28,15 +29,19 @@ class JsonStorage implements GameStorage
     }
 
     /**
+     * Gets the file where game data is to be stored
+     *
      * @return string
      */
-    protected function getDataFile()
+    protected function getDataFile() : string
     {
         return rtrim($this->savePath, '/') . '/' . $this->dataFile;
     }
 
     /**
      * Removes the saved game
+     *
+     * @return void
      */
     public function removeSavedGame()
     {
@@ -50,6 +55,8 @@ class JsonStorage implements GameStorage
     /**
      * @param array $player
      * @param int   $level
+     *
+     * @return void
      */
     public function saveGame(array $player, int $level)
     {

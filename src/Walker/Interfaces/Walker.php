@@ -9,7 +9,20 @@ use KamranAhmed\Walkers\Player\Interfaces\Player;
  */
 interface Walker
 {
-    public function getName();
+    /**
+     * Gets the name for walker
+     *
+     * @return string
+     */
+    public function getName() : string;
 
+    /**
+     * Grabs the bite out of player. Each walker's bite can have
+     * a different affect on the player.
+     *
+     * @param \KamranAhmed\Walkers\Player\Interfaces\Player $player
+     *
+     * @return void
+     */
     public function eat(Player $player);
 }
