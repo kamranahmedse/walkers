@@ -2,10 +2,10 @@
 
 namespace KamranAhmed\Walkers;
 
+use KamranAhmed\Walkers\Console\Interfaces\ConsoleInterface;
 use KamranAhmed\Walkers\Exceptions\InvalidLevelException;
 use KamranAhmed\Walkers\Player\Interfaces\Player;
 use KamranAhmed\Walkers\Storage\Interfaces\GameStorage;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * Class Map
@@ -17,8 +17,8 @@ class Game
     /** @var int */
     protected $level;
 
-    /** @var SymfonyStyle */
-    protected $io;
+    /** @var ConsoleInterface */
+    protected $console;
 
     /** @var Player */
     protected $player;
@@ -40,14 +40,13 @@ class Game
     /**
      * Map constructor.
      *
-     * @param \Symfony\Component\Console\Style\SymfonyStyle       $io
-     * @param \KamranAhmed\Walkers\Storage\Interfaces\GameStorage $storage
+     * @param \KamranAhmed\Walkers\Console\Interfaces\ConsoleInterface $console
+     * @param \KamranAhmed\Walkers\Storage\Interfaces\GameStorage      $storage
      *
-     * @throws \KamranAhmed\Walkers\Exceptions\InvalidLevelException
      */
-    public function __construct(SymfonyStyle $io, GameStorage $storage)
+    public function __construct(ConsoleInterface $console, GameStorage $storage)
     {
-        $this->io      = $io;
+        $this->console = $console;
         $this->storage = $storage;
     }
 
@@ -63,10 +62,10 @@ class Game
         switch ($action) {
             case static::SAVE_EXIT:
                 $this->saveGame();
-                $this->io->success('Bye bye ' . $this->player->getName() . '! Walkers will be waiting for you');
+                $this->console->printSuccess('Bye bye ' . $this->player->getName() . '! Walkers will be waiting for you');
                 exit(0);
             case static::EXIT:
-                $this->io->success('Bye bye ' . $this->player->getName() . '! Walkers will be waiting for you');
+                $this->console->printSuccess('Bye bye ' . $this->player->getName() . '! Walkers will be waiting for you');
                 exit(0);
         }
     }
@@ -82,9 +81,9 @@ class Game
     public function endGame()
     {
         if ($this->player->isAlive()) {
-            $this->io->success('Good work ' . $this->player->getName() . '! You have made it alive through the other end');
+            $this->console->printSuccess('Good work ' . $this->player->getName() . '! You have made it alive through the other end');
         } else {
-            $this->io->block('Rest in peace ' . $this->player->getName(), null, 'fg=black;bg=green', ' ', true);
+            $this->console->printDanger('Rest in peace ' . $this->player->getName());
         }
 
         $this->showProgress();
@@ -97,7 +96,7 @@ class Game
     public function gameLoop()
     {
         do {
-            $this->io->section('Level ' . ($this->level + 1));
+            $this->console->printTitle('Level ' . ($this->level + 1));
 
             $this->showProgress();
 
@@ -106,7 +105,7 @@ class Game
             $doorNames = array_keys($doors);
             $choices   = array_merge($doorNames, $this->actions);
 
-            $choice = $this->io->choice('Carefully choose the door to enter!', $choices);
+            $choice = $this->console->askChoice('Carefully choose the door to enter!', $choices);
 
             // If an action was chosen
             if (in_array($choice, $this->actions)) {
@@ -118,12 +117,13 @@ class Game
             if (!empty($doors[$choice])) {
                 $walker = $doors[$choice];
                 $walker->eat($this->player);
-                $this->io->block('Bitten by ' . $walker->getName() . '! Health decreased to ' . $this->player->getHealth(), null, 'fg=white;bg=red', ' ', true);
+
+                $this->console->printDanger('Bitten by ' . $walker->getName() . '! Health decreased to ' . $this->player->getHealth());
 
                 continue;
             }
 
-            $this->io->block('Phew! Nothing in that door!', null, 'fg=yellow;bg=blue;', ' ', 1);
+            $this->console->printInfo('Phew! Nothing in that door!');
             $this->player->addExperience($this->levelDetail['experiencePoints'] ?? 0);
 
             $this->level++;
@@ -145,10 +145,10 @@ class Game
             $this->choosePlayer();
         }
 
-        $this->io->text('You will be shown some doors!');
-        $this->io->text('Carefully choose a door while praying that you do not come across a Walker!');
+        $this->console->print('You will be shown some doors!');
+        $this->console->print('Carefully choose a door while praying that you do not come across a Walker!');
 
-        $this->io->newLine();
+        $this->console->breakLine();
     }
 
     /**
@@ -157,7 +157,7 @@ class Game
      */
     public function restoreSavedGame()
     {
-        $restoreGame = $this->io->choice('Saved game found. Would you like to restore it?', ['Yes', 'No']);
+        $restoreGame = $this->console->askChoice('Saved game found. Would you like to restore it?', ['Yes', 'No']);
         if ($restoreGame === 'No') {
             $this->storage->removeSavedGame();
 
@@ -215,11 +215,11 @@ class Game
     {
         $players = $this->levelDetail['players'] ?? [];
 
-        $choice = $this->io->choice('Chose your player?', array_keys($players));
+        $choice = $this->console->askChoice('Chose your player?', array_keys($players));
 
         $this->player = new $players[$choice];
 
-        $this->io->title('Godspeed ' . $this->player->getName() . '!');
+        $this->console->printTitle('Godspeed ' . $this->player->getName() . '!');
     }
 
     /**
@@ -250,8 +250,8 @@ class Game
      */
     public function showWelcome()
     {
-        $this->io->title('The Walking Dead');
-        $this->io->text('Welcome to the world of the dead, see if you can ditch your way through the walkers towards the sanctuary.');
+        $this->console->printTitle('The Walking Dead');
+        $this->console->print('Welcome to the world of the dead, see if you can ditch your way through the walkers towards the sanctuary.');
     }
 
     /**
@@ -260,7 +260,7 @@ class Game
      */
     public function showProgress()
     {
-        $this->io->table(
+        $this->console->printTable(
             ['Level', 'Experience', 'Health'],
             [
                 [$this->level + 1, $this->player->getExperience(), $this->player->getHealth()],

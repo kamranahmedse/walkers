@@ -2,6 +2,7 @@
 
 namespace KamranAhmed\Walkers;
 
+use KamranAhmed\Walkers\Console\SymfonyConsole;
 use KamranAhmed\Walkers\Storage\JsonStorage;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -35,10 +36,12 @@ class Runner extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io          = new SymfonyStyle($input, $output);
-        $jsonStorage = new JsonStorage();
+        $io = new SymfonyStyle($input, $output);
 
-        $map = new Game($io, $jsonStorage);
+        $symfonyConsole = new SymfonyConsole($io);
+        $jsonStorage    = new JsonStorage();
+
+        $map = new Game($symfonyConsole, $jsonStorage);
         $map->play();
 
         return 0;
