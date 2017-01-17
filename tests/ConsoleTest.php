@@ -12,7 +12,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *
  * @package KamranAhmed\Tests
  */
-class SymfonyConsoleTest extends PHPUnit_Framework_TestCase
+class ConsoleTest extends PHPUnit_Framework_TestCase
 {
     public function testAskChoiceGetsUnmodifiedResponseFromSymfonyIO()
     {
