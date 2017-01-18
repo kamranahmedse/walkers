@@ -34,7 +34,25 @@ class Map
      */
     public function __construct(string $mapPath)
     {
+        $this->validateMap($mapPath);
         $this->loadMap($mapPath);
+    }
+
+    /**
+     * @param $mapPath
+     *
+     * @throws \KamranAhmed\Walkers\Exceptions\InvalidMapFile
+     */
+    public function validateMap($mapPath)
+    {
+        if (!is_file($mapPath) || !is_readable($mapPath)) {
+            throw new InvalidMapFile('Map file does not exist or is not readable');
+        }
+
+        $mapDetail = require $mapPath;
+        if (!is_array($mapDetail) || empty($mapDetail['levels'])) {
+            throw new InvalidMapFile('Invalid map file given');
+        }
     }
 
     /**
@@ -45,10 +63,7 @@ class Map
      */
     protected function loadMap($mapPath)
     {
-        if (!file_exists($mapPath) || !is_readable($mapPath)) {
-            throw new InvalidMapFile('Map file does not exist or is not readable');
-        }
-
+        $this->level     = 0;
         $this->mapPath   = $mapPath;
         $this->mapDetail = require $mapPath;
         $this->doors     = $this->getDoors();
@@ -210,11 +225,21 @@ class Map
     }
 
     /**
+     * Gets the total number of levels in this map
+     *
+     * @return int
+     */
+    public function getLevelCount()
+    {
+        return count($this->mapDetail['levels']);
+    }
+
+    /**
      * Gets the door count in current level
      *
      * @return int
      */
-    protected function getDoorCount()
+    public function getDoorCount()
     {
         return intval($this->levelDetail['doorCount'] ?? 3);
     }
@@ -224,7 +249,7 @@ class Map
      *
      * @return int
      */
-    protected function getWalkerCount()
+    public function getWalkerCount()
     {
         return count($this->levelDetail['walkers'] ?? []);
     }
@@ -232,7 +257,7 @@ class Map
     /**
      * @return array
      */
-    protected function getWalkers()
+    public function getWalkers()
     {
         return $this->levelDetail['walkers'] ?? [];
     }

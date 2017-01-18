@@ -17,7 +17,7 @@ class JsonStorageTest extends PHPUnit_Framework_TestCase
     protected $fixturesPath     = __DIR__ . '/fixtures';
     protected $dataFile         = 'test-game-data.wd';
     protected $fullGameDataPath = __DIR__ . '/fixtures/test-game-data.wd';
-    protected $fullMapFilePath  = __DIR__ . '/fixtures/map.php';
+    protected $fullMapFilePath  = __DIR__ . '/fixtures/map-3-level.php';
 
     public function setUp()
     {
