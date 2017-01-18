@@ -91,7 +91,7 @@ class Game
     /**
      * Shows the game title and welcome message
      */
-    public function showWelcome()
+    protected function showWelcome()
     {
         $this->console->printTitle('The Walking Dead');
         $this->console->printText('Welcome to the world of the dead, see if you can ditch your way through the walkers towards the sanctuary.');
@@ -133,7 +133,7 @@ class Game
      * Asks for the player choice out of the
      * available players
      */
-    public function choosePlayer()
+    protected function choosePlayer()
     {
         $players = $this->map->getPlayers();
         $choice  = $this->console->askChoice('Choose your player?', array_keys($players));
@@ -149,7 +149,7 @@ class Game
      *
      * @throws \KamranAhmed\Walkers\Exceptions\InvalidLevelException
      */
-    public function gameLoop()
+    protected function gameLoop()
     {
         do {
             $currentLevel = $this->map->getCurrentLevel();
@@ -194,7 +194,7 @@ class Game
      * Shows the current progress of the player
      * in tabular form
      */
-    public function showProgress()
+    protected function showProgress()
     {
         $this->console->printTable(
             ['Level', 'Experience', 'Health'],
@@ -215,7 +215,7 @@ class Game
      *
      * @return array
      */
-    public function generateDoorMenu(array $doors)
+    protected function generateDoorMenu(array $doors)
     {
         $doorNames = array_keys($doors);
 
@@ -239,7 +239,7 @@ class Game
      *
      * @return void
      */
-    public function performAction($action)
+    protected function performAction($action)
     {
         switch ($action) {
             case static::SAVE_EXIT:
@@ -257,7 +257,7 @@ class Game
      *
      * @return void
      */
-    public function saveGame()
+    protected function saveGame()
     {
         $this->storage->saveGame(
             $this->player,
@@ -271,7 +271,7 @@ class Game
      *
      * @return bool
      */
-    public function isWalkerDoor(array $doors, string $door) : bool
+    protected function isWalkerDoor(array $doors, string $door) : bool
     {
         return !empty($doors[$door]) && ($doors[$door] instanceof Walker);
     }
@@ -279,7 +279,7 @@ class Game
     /**
      * Ends the game while providing the relevant
      */
-    public function endGame()
+    protected function endGame()
     {
         if ($this->player->isAlive()) {
             $this->console->printSuccess('Good work ' . $this->player->getName() . '! You have made it alive to the Sanctuary');
