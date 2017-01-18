@@ -8,7 +8,7 @@ use KamranAhmed\Walkers\Storage\Interfaces\GameStorage;
 use KamranAhmed\Walkers\Walker\Interfaces\Walker;
 
 /**
- * Class Map
+ * Class Game
  *
  * @package KamranAhmed\Walkers
  */

@@ -27,6 +27,24 @@ class JsonStorageTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @expectedException  \KamranAhmed\Walkers\Exceptions\InvalidGameData
+     */
+    public function testThrowsExceptionForInvalidGameData()
+    {
+        $storage = new JsonStorage($this->fixturesPath, 'invalid-saved-game.wd');
+        $storage->getSavedGame();
+    }
+
+    /**
+     * @expectedException  \KamranAhmed\Walkers\Exceptions\InvalidStoragePath
+     */
+    public function testThrowsInvalidStorageExceptionForInvalidPath()
+    {
+        $storage = new JsonStorage('/some/invalid/path', 'invalid.wd');
+        $storage->initialize();
+    }
+
+    /**
      * Checks if the encrypted game data is saved and not
      * just JSON is dumped
      */

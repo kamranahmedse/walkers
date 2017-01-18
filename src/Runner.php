@@ -41,11 +41,11 @@ class Runner extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $symfonyConsole = new SymfonyConsole($io);
-        $jsonStorage    = new JsonStorage(static::STORAGE_PATH);
-        $map            = new Map(self::MAPS_PATH);
+        $console = new SymfonyConsole($io);
+        $storage = new JsonStorage(static::STORAGE_PATH);
+        $map     = new Map(self::MAPS_PATH);
 
-        $map = new Game($symfonyConsole, $jsonStorage, $map);
+        $map = new Game($console, $storage, $map);
         $map->play();
 
         return 0;
