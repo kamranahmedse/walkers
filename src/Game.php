@@ -164,6 +164,7 @@ class Game
             if ($this->isMenuAction($choice)) {
                 $this->performAction($choice);
             }
+
             // Door had walker in it?
             // Get the player bitten continue again to show the current level
             else if ($this->isWalkerDoor($doors, $choice)) {

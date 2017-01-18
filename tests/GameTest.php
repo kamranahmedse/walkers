@@ -134,6 +134,30 @@ class GameTest extends PHPUnit_Framework_TestCase
         ];
     }
 
+    /**
+     * @dataProvider menuItemsProvider
+     *
+     * @param $item
+     */
+    public function testCanIdentifyTheMenuItems($item)
+    {
+        $console = $this->getEmptyConsoleMock();
+        $map     = new Map($this->storagePath . '/map-3-level.php');
+        $storage = Mockery::mock(JsonStorage::class);
+
+        $game = new GameDouble($console, $storage, $map);
+
+        $this->assertTrue($game->isMenuAction($item));
+    }
+
+    public function menuItemsProvider()
+    {
+        return [
+            [GameDouble::EXIT],
+            [GameDouble::SAVE_EXIT],
+        ];
+    }
+
     public function testWalkerDoorCanBeIdentified()
     {
         $console = $this->getEmptyConsoleMock();
@@ -192,7 +216,6 @@ class GameTest extends PHPUnit_Framework_TestCase
             'printTable'   => [Mockery::any(), Mockery::any()],
         ];
 
-
         foreach ($methods as $method => $args) {
             if (in_array($method, $mockExcept)) {
                 continue;
@@ -204,7 +227,6 @@ class GameTest extends PHPUnit_Framework_TestCase
         return $console;
     }
 
-    // TODO : Automate this using `phpunit.xml`
     public function tearDown()
     {
         Mockery::close();

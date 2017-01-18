@@ -136,7 +136,6 @@ class ConsoleTest extends PHPUnit_Framework_TestCase
         ];
     }
 
-    // TODO : Automate this using `phpunit.xml`
     public function tearDown()
     {
         Mockery::close();
