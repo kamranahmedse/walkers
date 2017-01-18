@@ -37,9 +37,32 @@ class MapTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(3, $map->getLevelCount());
     }
 
+    /**
+     * @expectedException  \KamranAhmed\Walkers\Exceptions\InvalidLevelException
+     */
+    public function testThrowsExceptionWhenLoadingInvalidLevel()
+    {
+        $map = $this->getMap('map-3-level.php');
+
+        $map->loadLevel(5);
+    }
+
+    public function testFirstLevelIsLoadedByDefault()
+    {
+        $map = $this->getMap('map-3-level.php');
+
+        $this->assertEquals(0, $map->getCurrentLevel());
+        $this->assertEquals(10, $map->getCurrentLevelExperience());
+        $this->assertEquals(1, $map->getWalkerCount());
+        $this->assertEquals(3, $map->getDoorCount());
+        $this->assertNotEmpty($map->getPlayers());
+        $this->assertNotEmpty($map->getWalkers());
+    }
+
     public function testCanLoadSpecificLevel()
     {
         $map = $this->getMap('map-3-level.php');
+
         $map->loadLevel(1);
 
         $this->assertEquals(1, $map->getCurrentLevel());
@@ -97,7 +120,81 @@ class MapTest extends PHPUnit_Framework_TestCase
     {
         $map = $this->getMap('map-3-level.php');
 
-        // TODO
+        // Get the doors in first level
+        $doors = $map->getDoors();
+        $this->assertCount(3, $doors);
+
+        // Advance to next level
+        $map->advance();
+
+        // Get the doors in next level
+        $doors = $map->getDoors();
+        $this->assertCount(5, $doors);
+    }
+
+    public function testLevelDoorsAreNamed()
+    {
+        $map = $this->getMap('map-3-level.php');
+
+        // Get the doors in first level
+        $doors = $map->getDoors();
+        $this->assertCount(3, $doors);
+
+        // Check if all the doors returned are named
+        $foundDoors = array_keys($doors);
+        $namedDoors = array_filter($foundDoors, function ($doorName) {
+            return is_string($doorName) && stripos($doorName, 'door') !== false;
+        });
+
+        $this->assertEquals(count($foundDoors), count($namedDoors));
+    }
+
+    public function testCanShuffleDoors()
+    {
+        $map = $this->getMap('map-3-level.php');
+
+        // Advance to next level i.e. `level 1`
+        $map->advance();
+
+        // Get the doors in next level
+        $iter1Doors = $map->getDoors(true);
+        $iter2Doors = $map->getDoors(true);
+        $iter3Doors = $map->getDoors(true);
+
+        $iter1Walkers = array_filter($iter1Doors, 'is_object');
+        $iter1Walkers = implode(',', array_keys($iter1Walkers));
+
+        $iter2Walkers = array_filter($iter2Doors, 'is_object');
+        $iter2Walkers = implode(',', array_keys($iter2Walkers));
+
+        $iter3Walkers = array_filter($iter3Doors, 'is_object');
+        $iter3Walkers = implode(',', array_keys($iter3Walkers));
+
+        $this->assertTrue($iter1Walkers !== $iter2Walkers || $iter1Walkers !== $iter3Walkers);
+    }
+
+    public function testCanGetUnShuffleDoors()
+    {
+        $map = $this->getMap('map-3-level.php');
+
+        // Advance to next level i.e. `level 1`
+        $map->advance();
+
+        // Get the doors in next level
+        $iter1Doors = $map->getDoors();
+        $iter2Doors = $map->getDoors();
+        $iter3Doors = $map->getDoors();
+
+        $iter1Walkers = array_filter($iter1Doors, 'is_object');
+        $iter1Walkers = implode(',', array_keys($iter1Walkers));
+
+        $iter2Walkers = array_filter($iter2Doors, 'is_object');
+        $iter2Walkers = implode(',', array_keys($iter2Walkers));
+
+        $iter3Walkers = array_filter($iter3Doors, 'is_object');
+        $iter3Walkers = implode(',', array_keys($iter3Walkers));
+
+        $this->assertTrue($iter1Walkers === $iter2Walkers || $iter1Walkers === $iter3Walkers);
     }
 
     public function verifyLevelDataProvider()
@@ -113,8 +210,7 @@ class MapTest extends PHPUnit_Framework_TestCase
      *
      * @return \KamranAhmed\Walkers\Map
      */
-    public
-    function getMap($fileName) : Map
+    public function getMap($fileName) : Map
     {
         return new Map($this->storagePath . '/' . $fileName);
     }

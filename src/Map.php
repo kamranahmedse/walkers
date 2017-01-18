@@ -67,6 +67,8 @@ class Map
         $this->mapPath   = $mapPath;
         $this->mapDetail = require $mapPath;
         $this->doors     = $this->getDoors();
+
+        $this->loadLevel($this->level);
     }
 
     /**
@@ -196,7 +198,7 @@ class Map
      *
      * @return array
      */
-    public function nameDoors(array $doors)
+    protected function nameDoors(array $doors)
     {
         $namedDoors = [];
 
