@@ -6,8 +6,10 @@ use KamranAhmed\Tests\Fakes\GameDouble;
 use KamranAhmed\Walkers\Console\Interfaces\ConsoleInterface;
 use KamranAhmed\Walkers\Map;
 use KamranAhmed\Walkers\Player\GunnerRick;
+use KamranAhmed\Walkers\Player\Interfaces\Player;
 use KamranAhmed\Walkers\Player\KidCarl;
 use KamranAhmed\Walkers\Storage\JsonStorage;
+use KamranAhmed\Walkers\Walker\Blind;
 use Mockery;
 use PHPUnit_Framework_TestCase;
 
@@ -34,7 +36,7 @@ class GameTest extends PHPUnit_Framework_TestCase
         // Assert that the user is asked to restore the game
         $console->shouldReceive('askChoice')
                 ->never()
-                ->withArgs(['Chose your player?', Mockery::any()])
+                ->withArgs(['Choose your player?', Mockery::any()])
                 ->andReturn(null);
 
         $map = new Map($this->storagePath . '/map-3-level.php');
@@ -76,7 +78,7 @@ class GameTest extends PHPUnit_Framework_TestCase
         // Assert that the user is asked to restore the game
         $console->shouldReceive('askChoice')
                 ->once()
-                ->withArgs(['Chose your player?', Mockery::any()])
+                ->withArgs(['Choose your player?', Mockery::any()])
                 ->andReturn('Rick - The Father');
 
         $map = new Map($this->storagePath . '/map-3-level.php');
@@ -93,6 +95,84 @@ class GameTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(0, $game->player->getExperience());
         $this->assertEquals(100, $game->player->getHealth());
         $this->assertEquals(0, $game->map->getCurrentLevel());
+    }
+
+    /**
+     * @dataProvider threeLeveledMapPlayersProvider
+     *
+     * @param \KamranAhmed\Walkers\Player\Interfaces\Player $player
+     * @param                                               $choice
+     */
+    public function testUserCanChoosePlayer(Player $player, $choice)
+    {
+        $storage = Mockery::mock(JsonStorage::class);
+        $map     = new Map($this->storagePath . '/map-3-level.php');
+        $console = $this->getEmptyConsoleMock(['printTitle', 'askChoice']);
+
+        $console->shouldReceive('printTitle')
+                ->once()
+                ->with('Godspeed ' . $player->getName() . '!')
+                ->andReturn();
+
+        $console->shouldReceive('askChoice')
+                ->once()
+                ->with('Choose your player?', Mockery::any())
+                ->andReturn($choice);
+
+        $game = new GameDouble($console, $storage, $map);
+        $game->choosePlayer();
+        $playerChoice = $game->player;
+
+        $this->assertInstanceOf(get_class($player), $playerChoice);
+    }
+
+    public function threeLeveledMapPlayersProvider()
+    {
+        return [
+            [new GunnerRick(), 'Rick - The Father'],
+            [new KidCarl(), 'Carl - The Kid'],
+        ];
+    }
+
+    public function testWalkerDoorCanBeIdentified()
+    {
+        $console = $this->getEmptyConsoleMock();
+        $map     = new Map($this->storagePath . '/map-3-level.php');
+        $storage = Mockery::mock(JsonStorage::class);
+
+        $game = new GameDouble($console, $storage, $map);
+
+        $doors = [
+            'Door # 1' => false,
+            'Door # 2' => new Blind(),
+            'Door # 3' => false,
+        ];
+
+        $this->assertTrue($game->isWalkerDoor($doors, 'Door # 2'));
+        $this->assertFalse($game->isWalkerDoor($doors, 'Door # 1'));
+    }
+
+    public function testEndGameShowsTheStatsIfPlayerIsAlive()
+    {
+        $storage = Mockery::mock(JsonStorage::class);
+        $player  = new GunnerRick();
+        $map     = new Map($this->storagePath . '/map-3-level.php');
+        $console = $this->getEmptyConsoleMock(['printSuccess', 'printTable']);
+
+        $console->shouldReceive('printTable')
+                ->once()
+                ->with(['Level', 'Experience', 'Health'], Mockery::any());
+
+        $console->shouldReceive('printSuccess')
+                ->once()
+                ->with('Good work ' . $player->getName() . '! You have made it alive to the Sanctuary')
+                ->andReturn();
+
+
+        $game         = new GameDouble($console, $storage, $map);
+        $game->player = $player;
+
+        $game->endGame();
     }
 
     public function getEmptyConsoleMock($mockExcept = [])

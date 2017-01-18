@@ -136,7 +136,7 @@ class Game
     public function choosePlayer()
     {
         $players = $this->map->getPlayers();
-        $choice  = $this->console->askChoice('Chose your player?', array_keys($players));
+        $choice  = $this->console->askChoice('Choose your player?', array_keys($players));
 
         $this->player = new $players[$choice];
 

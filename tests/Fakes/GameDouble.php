@@ -1,6 +1,6 @@
 <?php
 
-namespace KamranAhmed\Tests\Fakes;
+namespace KamranAhmed\Tests\fakes;
 
 use BadMethodCallException;
 use Exception;
@@ -36,6 +36,21 @@ use KamranAhmed\Walkers\Storage\Interfaces\GameStorage;
  */
 class GameDouble extends Game
 {
+    /**
+     * @param $name
+     * @param $value
+     *
+     * @throws \Exception
+     */
+    public function __set($name, $value)
+    {
+        if (!property_exists($this, $name)) {
+            throw new Exception('Undefined property ' . $name);
+        }
+
+        $this->{$name} = $value;
+    }
+
     /**
      * @param $name
      *
