@@ -116,7 +116,6 @@ class ConsoleTest extends PHPUnit_Framework_TestCase
     public function testPrintMethodsAreCorrectlyProxied($method, ...$args)
     {
         // Mock set in the console will handle the proxy checks
-        // @see self::getPrintMethodMapping()
         $console = $this->getConsole([]);
 
         call_user_func_array([$console, $method], $args);

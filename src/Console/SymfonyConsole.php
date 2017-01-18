@@ -83,7 +83,7 @@ class SymfonyConsole implements Console
      */
     public function printInfo(string $message)
     {
-        $this->io->block($message, null, 'fg=yellow;bg=blue;', ' ', 1);
+        $this->io->block($message, null, 'fg=yellow;bg=blue;', ' ', true);
     }
 
     /**
