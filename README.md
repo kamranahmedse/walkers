@@ -3,8 +3,6 @@
 > A console based fan fiction RPG for [The Walking Dead](http://www.imdb.com/title/tt1520211/)
 
 [![Build Status](https://travis-ci.org/kamranahmedse/walkers.svg?branch=master)](https://travis-ci.org/kamranahmedse/walkers)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/kamranahmedse/walkers/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/kamranahmedse/walkers/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/kamranahmedse/walkers/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/kamranahmedse/walkers/?branch=master)
 
 Walkers is a rough fan-fiction console based RPG for [The Walking Dead](http://www.imdb.com/title/tt1520211/) built in PHP and can be used for educational purposes on OOP and how to write clean and extensible code.
 
