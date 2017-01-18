@@ -18,7 +18,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 class Runner extends Command
 {
-    const MAPS_PATH = __DIR__ . '/../config/map.php';
+    const MAPS_PATH    = __DIR__ . '/../config/map.php';
+    const STORAGE_PATH = __DIR__ . '/../storage';
 
     /**
      * Configures the command
@@ -41,7 +42,7 @@ class Runner extends Command
         $io = new SymfonyStyle($input, $output);
 
         $symfonyConsole = new SymfonyConsole($io);
-        $jsonStorage    = new JsonStorage();
+        $jsonStorage    = new JsonStorage(static::STORAGE_PATH);
         $map            = new Map(self::MAPS_PATH);
 
         $map = new Game($symfonyConsole, $jsonStorage, $map);

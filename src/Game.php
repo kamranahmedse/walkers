@@ -255,8 +255,8 @@ class Game
     public function saveGame()
     {
         $this->storage->saveGame(
-            $this->player->toArray(),
-            $this->map->getCurrentLevel()
+            $this->player,
+            $this->map
         );
     }
 

@@ -2,6 +2,9 @@
 
 namespace KamranAhmed\Walkers\Storage\Interfaces;
 
+use KamranAhmed\Walkers\Map;
+use KamranAhmed\Walkers\Player\Interfaces\Player;
+
 /**
  * Interface GameStorage
  *
@@ -19,12 +22,12 @@ interface GameStorage
     /**
      * Saves the current progress of user
      *
-     * @param array $player
-     * @param int   $level
+     * @param \KamranAhmed\Walkers\Player\Interfaces\Player $player
+     * @param \KamranAhmed\Walkers\Map                      $map
      *
      * @return void
      */
-    public function saveGame(array $player, int $level);
+    public function saveGame(Player $player, Map $map);
 
     /**
      * Gets the saved game for the restore

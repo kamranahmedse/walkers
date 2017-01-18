@@ -5,6 +5,8 @@ namespace KamranAhmed\Walkers\Storage;
 use KamranAhmed\Walkers\Exceptions\InvalidGameData;
 use KamranAhmed\Walkers\Exceptions\InvalidStoragePath;
 use KamranAhmed\Walkers\Exceptions\NoSavedGame;
+use KamranAhmed\Walkers\Map;
+use KamranAhmed\Walkers\Player\Interfaces\Player;
 use KamranAhmed\Walkers\Storage\Interfaces\GameStorage;
 
 /**
@@ -14,8 +16,23 @@ use KamranAhmed\Walkers\Storage\Interfaces\GameStorage;
  */
 class JsonStorage implements GameStorage
 {
-    protected $savePath = __DIR__ . '/../../storage';
-    protected $dataFile = 'game-data.wd';
+    /** @var string */
+    protected $savePath;
+
+    /** @var string */
+    protected $dataFile;
+
+    /**
+     * JsonStorage constructor.
+     *
+     * @param        $saveDir
+     * @param string $dataFile
+     */
+    public function __construct($saveDir, $dataFile = 'game-data.wd')
+    {
+        $this->savePath = $saveDir;
+        $this->dataFile = $dataFile;
+    }
 
     /**
      * @throws \KamranAhmed\Walkers\Exceptions\InvalidStoragePath
@@ -23,7 +40,7 @@ class JsonStorage implements GameStorage
      */
     public function initialize()
     {
-        if (!is_dir($this->savePath) || !is_writable($this->dataFile)) {
+        if (!is_dir($this->savePath) || !is_writable($this->savePath)) {
             throw new InvalidStoragePath(sprintf('Storage directory `%s` does not exist or is not readable', $this->savePath));
         }
     }
@@ -53,16 +70,16 @@ class JsonStorage implements GameStorage
     }
 
     /**
-     * @param array $player
-     * @param int   $level
+     * @param \KamranAhmed\Walkers\Player\Interfaces\Player $player
+     * @param \KamranAhmed\Walkers\Map                      $map
      *
      * @return void
      */
-    public function saveGame(array $player, int $level)
+    public function saveGame(Player $player, Map $map)
     {
         $gameData = [
-            'player' => $player,
-            'level'  => $level,
+            'player' => $player->toArray(),
+            'level'  => $map->getCurrentLevel(),
         ];
 
         $dataFile = $this->getDataFile();

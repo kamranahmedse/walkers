@@ -29,8 +29,8 @@ class PlayerTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($player->isAlive());
 
         $player->setHealth(23);
+        
         $this->assertEquals(23, $player->getHealth());
-
         $this->assertTrue($player->isAlive());
     }
 
