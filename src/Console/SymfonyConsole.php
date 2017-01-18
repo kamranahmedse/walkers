@@ -105,7 +105,7 @@ class SymfonyConsole implements ConsoleInterface
      *
      * @return void
      */
-    public function print(string $message)
+    public function printText(string $message)
     {
         $this->io->text($message);
     }

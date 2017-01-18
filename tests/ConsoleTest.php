@@ -88,7 +88,7 @@ class ConsoleTest extends PHPUnit_Framework_TestCase
             'printDanger'  => ['block', Mockery::any(), null, 'fg=white;bg=red', ' ', true],
             'printInfo'    => ['block', Mockery::any(), null, 'fg=yellow;bg=blue;', ' ', 1],
             'printSuccess' => ['success', Mockery::any()],
-            'print'        => ['text', Mockery::any()],
+            'printText'    => ['text', Mockery::any()],
             'printTitle'   => ['title', Mockery::any()],
             'printTable'   => ['table', Mockery::any(), Mockery::any()],
             'breakLine'    => ['newLine', Mockery::any()],
@@ -129,11 +129,17 @@ class ConsoleTest extends PHPUnit_Framework_TestCase
             ['printDanger', 'Dangerous text'],
             ['printInfo', 'Information to be printed'],
             ['printSuccess', 'Success message to be printed'],
-            ['print', 'Something to be printed'],
+            ['printText', 'Something to be printed'],
             ['printTitle', 'Title to be printed'],
             ['printTable', [], []],
             ['breakLine', 1],
         ];
+    }
+
+    // TODO : Automate this using `phpunit.xml`
+    public function tearDown()
+    {
+        Mockery::close();
     }
 }
 

@@ -8,7 +8,6 @@ use KamranAhmed\Walkers\Player\KidCarl;
 use KamranAhmed\Walkers\Player\NinjaMichone;
 use KamranAhmed\Walkers\Player\OldHershel;
 use KamranAhmed\Walkers\Player\RunnerGlenn;
-use Mockery;
 use PHPUnit_Framework_TestCase;
 
 /**
@@ -29,7 +28,7 @@ class PlayerTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($player->isAlive());
 
         $player->setHealth(23);
-        
+
         $this->assertEquals(23, $player->getHealth());
         $this->assertTrue($player->isAlive());
     }

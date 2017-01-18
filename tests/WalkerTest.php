@@ -8,7 +8,6 @@ use KamranAhmed\Walkers\Walker\Deadly;
 use KamranAhmed\Walkers\Walker\Grouchy;
 use KamranAhmed\Walkers\Walker\Interfaces\Walker;
 use KamranAhmed\Walkers\Walker\OneLegged;
-use Mockery;
 use PHPUnit_Framework_TestCase;
 
 /**

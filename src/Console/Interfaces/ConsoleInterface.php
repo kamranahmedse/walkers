@@ -71,8 +71,7 @@ interface ConsoleInterface
      *
      * @return mixed
      */
-    public function print(string $message);
-
+    public function printText(string $message);
 
     /**
      * Prints the heading

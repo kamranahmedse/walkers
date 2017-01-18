@@ -82,8 +82,8 @@ class Game
         // has started playing if it was available
         $this->storage->removeSavedGame();
 
-        $this->console->print('You will be shown some doors!');
-        $this->console->print('Carefully choose a door while praying that you do not come across a Walker!');
+        $this->console->printText('You will be shown some doors!');
+        $this->console->printText('Carefully choose a door while praying that you do not come across a Walker!');
 
         $this->console->breakLine();
     }
@@ -94,7 +94,7 @@ class Game
     public function showWelcome()
     {
         $this->console->printTitle('The Walking Dead');
-        $this->console->print('Welcome to the world of the dead, see if you can ditch your way through the walkers towards the sanctuary.');
+        $this->console->printText('Welcome to the world of the dead, see if you can ditch your way through the walkers towards the sanctuary.');
     }
 
     /**
@@ -127,8 +127,6 @@ class Game
 
         // Load the specified map level
         $this->map->loadLevel($gameData['level']);
-
-        $this->storage->removeSavedGame();
     }
 
     /**
@@ -283,6 +281,5 @@ class Game
         }
 
         $this->showProgress();
-        exit(0);
     }
 }
