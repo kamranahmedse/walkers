@@ -170,8 +170,11 @@ class Game
             // Door had walker in it?
             // Get the player bitten continue again to show the current level
             else if ($this->isWalkerDoor($doors, $choice)) {
-                $doors[$choice]->eat($this->player);
-                $this->console->printDanger('Bitten by ' . $doors[$choice]->getName() . '! Health decreased to ' . $this->player->getHealth());
+                /** @var Walker $walker */
+                $walker = $doors[$choice];
+
+                $walker->eat($this->player);
+                $this->console->printDanger('Bitten by ' . $walker->getName() . '! Health decreased to ' . $this->player->getHealth());
             }
             // Door does not have any walker
             // Add the experience and advance to next level
@@ -247,7 +250,7 @@ class Game
                 $this->console->printSuccess('Bye bye ' . $this->player->getName() . '! Walkers will be waiting for you');
                 exit(0);
             case static::EXIT:
-                $this->console->printSuccess('Bye bye ' . $this->player->getName() . '! Walkers will be waiting for you');
+                $this->console->printSuccess('Bye ' . $this->player->getName() . '! We wish you would have not loss hope');
                 exit(0);
         }
     }
