@@ -2,7 +2,7 @@
 
 namespace KamranAhmed\Walkers;
 
-use KamranAhmed\Walkers\Console\Interfaces\ConsoleInterface;
+use KamranAhmed\Walkers\Console\Interfaces\Console;
 use KamranAhmed\Walkers\Player\Interfaces\Player;
 use KamranAhmed\Walkers\Storage\Interfaces\GameStorage;
 use KamranAhmed\Walkers\Walker\Interfaces\Walker;
@@ -25,7 +25,7 @@ class Game
     /** @var \KamranAhmed\Walkers\Map */
     protected $map;
 
-    /** @var ConsoleInterface */
+    /** @var Console */
     protected $console;
 
     /** @var Player */
@@ -37,11 +37,11 @@ class Game
     /**
      * Map constructor.
      *
-     * @param \KamranAhmed\Walkers\Console\Interfaces\ConsoleInterface $console
-     * @param \KamranAhmed\Walkers\Storage\Interfaces\GameStorage      $storage
-     * @param \KamranAhmed\Walkers\Map                                 $map
+     * @param \KamranAhmed\Walkers\Console\Interfaces\Console     $console
+     * @param \KamranAhmed\Walkers\Storage\Interfaces\GameStorage $storage
+     * @param \KamranAhmed\Walkers\Map                            $map
      */
-    public function __construct(ConsoleInterface $console, GameStorage $storage, Map $map)
+    public function __construct(Console $console, GameStorage $storage, Map $map)
     {
         $this->console = $console;
         $this->storage = $storage;

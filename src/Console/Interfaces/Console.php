@@ -7,7 +7,7 @@ namespace KamranAhmed\Walkers\Console\Interfaces;
  *
  * @package KamranAhmed\Walkers\Console\Interfaces
  */
-interface ConsoleInterface
+interface Console
 {
     /**
      * Asks a choice question and returns one of the valid responses

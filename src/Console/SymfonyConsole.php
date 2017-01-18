@@ -2,7 +2,7 @@
 
 namespace KamranAhmed\Walkers\Console;
 
-use KamranAhmed\Walkers\Console\Interfaces\ConsoleInterface;
+use KamranAhmed\Walkers\Console\Interfaces\Console;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -10,7 +10,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *
  * @package KamranAhmed\Walkers\Console
  */
-class SymfonyConsole implements ConsoleInterface
+class SymfonyConsole implements Console
 {
     /** @var SymfonyStyle */
     protected $io;

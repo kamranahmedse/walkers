@@ -1,4 +1,5 @@
 # Walkers
+
 > A console based fan fiction RPG for [The Walking Dead](http://www.imdb.com/title/tt1520211/)
 
 [![Build Status](https://travis-ci.org/kamranahmedse/walkers.svg?branch=master)](https://travis-ci.org/kamranahmedse/walkers)
@@ -72,6 +73,8 @@ Player chooses to save game and exit.
 
 In which case, player will be asked if they want to resume the game or start a new game when the game is run the next time.
 
+> Game data is stored in `/storage/game-data.wd` in encrypted-but-not-so-super-encrypted manner.
+
 ![Resume Game?](http://i.imgur.com/u3u1ZuB.png)
 
 If the user chooses to restore game; it will begin from the last state (i.e. same level, health and experience). If not, it will begin from the first level.
@@ -91,5 +94,69 @@ Player gets bitten by zombies again and again to the point that health becomes z
 Final level is reached.
 
 ![](http://i.imgur.com/UyKyhue.png)
-   
 
+## How to extend
+
+Please find the relevant details below
+ 
+### What is where
+
+- **/config** directory in the root contains any configuration and map files.
+- **/src** is where all the magic happens
+- **/src/Console** contains the contracts and implementations for console component to be used for logging and getting inputs. Currently having the implementation for [Symfony's console component](http://symfony.com/doc/current/components/console.html)
+- **/src/Exceptions** Any exceptions to be thrown
+- **/src/Player** has the contracts and implementations for `Player`. Also houses sample implementations for some [Walking Dead Characters](https://www.google.ae/search?q=walking+dead+cast&oq=walking+dead+cast&aqs=chrome..69i57j69i60j69i59j69i60j69i61j0.4479j0j1&sourceid=chrome&ie=UTF-8)
+- **/src/Walker** houses the contracts and implementation for `Walkers` having sample implementation for some walkers.
+- **/src/Storage** has everything relevant to storage. Currently there is JSON file storage support.
+- **/src/Game.php** houses the game loop and acts as the controller for game.
+- **/src/Map.php** has all the map specific details.
+- **/src/Runner.php** Symfony command that initiates the game loop. Symfony's console component needs that.
+- **/storage** contains any storage related data
+- **/tests** of-course contain the test cases.
+- **/index.php** is the file that bootstraps the game
+
+### i. Extending Map - Adding or Modifying Levels
+
+Head to the map file at `config/map.php` and follow the instructions at the top to add new level or modify the existing levels. To add a new level all you have to do is add it to the `levels` array in the map. A sample level may look like below:
+
+```php
+[
+    'doorCount'        => 3,    // Doors on this level
+    'players'          => [     // Array of allowed (if first) or unlocked (on other levels [TODO]) 
+        'Rick - The Father' => GunnerRick::class,
+        'Carl - The Kid'    => KidCarl::class,
+    ],
+    'walkers'          => [     // Array of walkers that will be put in a random door
+        OneLegged::class,
+    ],
+    'experiencePoints' => 10,   // Experience points added on successful completion of level
+],
+```
+
+For further details, please check the docs in `config/map.php`.
+
+### ii. Changing Console Component
+
+Say you would like to replace Symfony's console component with something else, just implement the interface `KamranAhmed\Walkers\Console\Interfaces\ConsoleInterface` and pass the instance of it while initializing Game i.e.
+
+```php
+$game = new \KamranAhmed\Walkers\Game(ConsoleInterface $console ...);
+$game->play();
+```
+
+### iii. Introducing New Player Types
+
+Just implement the `KamranAhmed\Walkers\Player\Interfaces\Player` interface and use in the map or wherever you want.
+
+### iv. Changing Storage Component
+
+Currently there is `JsonStorage` but you can easily replace it with database or anything by implementing `\KamranAhmed\Walkers\Storage\Interfaces\GameStorage` and use it while initializing the game i.e. 
+
+```php
+$game = new \KamranAhmed\Walkers\Game(ConsoleInterface $console, Storage $storage, ...);
+$game->play();
+```
+
+### v. New or Advanced Walkers
+
+Just implement the `\KamranAhmed\Walkers\Walker\Interfaces\Walker` interface and use it. Also if you would want to modify the bite behavior, just override the `eat` method in the base walker class and implement your own in the walker.

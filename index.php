@@ -14,7 +14,7 @@ use Symfony\Component\Console\Application;
 | default command for the application and gets the ball rolling
 |
 */
-$app  = new Application('lost', '1.0.0');
+$app  = new Application('walkers', '1.0.0');
 $game = new Runner();
 
 $app->add($game);

@@ -4,7 +4,7 @@ namespace KamranAhmed\Tests\fakes;
 
 use BadMethodCallException;
 use Exception;
-use KamranAhmed\Walkers\Console\Interfaces\ConsoleInterface;
+use KamranAhmed\Walkers\Console\Interfaces\Console;
 use KamranAhmed\Walkers\Game;
 use KamranAhmed\Walkers\Map;
 use KamranAhmed\Walkers\Player\Interfaces\Player;
@@ -27,10 +27,10 @@ use KamranAhmed\Walkers\Storage\Interfaces\GameStorage;
  * @method endGame()
  * @method saveGame()
  *
- * @property Map              $map
- * @property ConsoleInterface $console
- * @property Player           $player
- * @property GameStorage      $storage
+ * @property Map         $map
+ * @property Console     $console
+ * @property Player      $player
+ * @property GameStorage $storage
  *
  * @package KamranAhmed\Tests
  */

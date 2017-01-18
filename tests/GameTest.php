@@ -3,7 +3,7 @@
 namespace KamranAhmed\Tests;
 
 use KamranAhmed\Tests\fakes\GameDouble;
-use KamranAhmed\Walkers\Console\Interfaces\ConsoleInterface;
+use KamranAhmed\Walkers\Console\Interfaces\Console;
 use KamranAhmed\Walkers\Map;
 use KamranAhmed\Walkers\Player\GunnerRick;
 use KamranAhmed\Walkers\Player\Interfaces\Player;
@@ -201,7 +201,7 @@ class GameTest extends PHPUnit_Framework_TestCase
 
     public function getEmptyConsoleMock($mockExcept = [])
     {
-        $console = Mockery::mock(ConsoleInterface::class);
+        $console = Mockery::mock(Console::class);
 
         $methods = [
             'askChoice'    => [Mockery::any(), Mockery::any()],

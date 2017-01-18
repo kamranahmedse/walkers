@@ -45,8 +45,8 @@ class Runner extends Command
         $storage = new JsonStorage(static::STORAGE_PATH);
         $map     = new Map(self::MAPS_PATH);
 
-        $map = new Game($console, $storage, $map);
-        $map->play();
+        $game = new Game($console, $storage, $map);
+        $game->play();
 
         return 0;
     }
