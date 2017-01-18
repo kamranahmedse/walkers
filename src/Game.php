@@ -152,7 +152,9 @@ class Game
     public function gameLoop()
     {
         do {
-            $this->console->printTitle('Level ' . ($this->map->getCurrentLevel()));
+            $currentLevel = $this->map->getCurrentLevel();
+
+            $this->console->printTitle('Level ' . ($currentLevel + 1));
             $this->showProgress();
 
             $doors   = $this->map->getDoors(true);
@@ -197,7 +199,11 @@ class Game
         $this->console->printTable(
             ['Level', 'Experience', 'Health'],
             [
-                [$this->map->getCurrentLevel(), $this->player->getExperience(), $this->player->getHealth()],
+                [
+                    $this->map->getCurrentLevel() + 1,
+                    $this->player->getExperience(),
+                    $this->player->getHealth(),
+                ],
             ]
         );
     }

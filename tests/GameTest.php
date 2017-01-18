@@ -2,7 +2,7 @@
 
 namespace KamranAhmed\Tests;
 
-use KamranAhmed\Tests\Fakes\GameDouble;
+use KamranAhmed\Tests\fakes\GameDouble;
 use KamranAhmed\Walkers\Console\Interfaces\ConsoleInterface;
 use KamranAhmed\Walkers\Map;
 use KamranAhmed\Walkers\Player\GunnerRick;
