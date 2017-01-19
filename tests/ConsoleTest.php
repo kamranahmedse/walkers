@@ -14,6 +14,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 class ConsoleTest extends PHPUnit_Framework_TestCase
 {
+    /**
+     * @covers SymfonyConsole::askChoice
+     */
     public function testAskChoiceGetsUnmodifiedResponseFromSymfonyIO()
     {
         $question = [
@@ -95,6 +98,9 @@ class ConsoleTest extends PHPUnit_Framework_TestCase
         ];
     }
 
+    /**
+     * @covers SymfonyConsole::askQuestion
+     */
     public function testAskQuestionGetsUnmodifiedResponseFromSymfonyIO()
     {
         $question = [
@@ -109,6 +115,13 @@ class ConsoleTest extends PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider printMethodsProvider
+     *
+     * @covers       SymfonyConsole::showSection
+     * @covers       SymfonyConsole::printDanger
+     * @covers       SymfonyConsole::printInfo
+     * @covers       SymfonyConsole::printSuccess
+     * @covers       SymfonyConsole::printText
+     * @covers       SymfonyConsole::printTitle
      *
      * @param       $method
      * @param array $args

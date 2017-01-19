@@ -3,6 +3,8 @@
 > A console based fan fiction RPG for [The Walking Dead](http://www.imdb.com/title/tt1520211/)
 
 [![Build Status](https://travis-ci.org/kamranahmedse/walkers.svg?branch=master)](https://travis-ci.org/kamranahmedse/walkers)
+![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/kamranahmedse/walkers.svg)
+![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/kamranahmedse/walkers.svg)
 
 Walkers is a rough fan-fiction console based RPG for [The Walking Dead](http://www.imdb.com/title/tt1520211/) built in PHP and can be used for educational purposes on OOP and how to write clean and extensible code.
 
@@ -102,7 +104,9 @@ Final level is reached.
 - `/tests` of-course contain the test cases.
 - `/index.php` is the file that bootstraps the game
 
-In **order to add or modify levels**, head to the map file at `config/map.php` and follow the instructions at the top to add new level or modify the existing levels. To add a new level all you have to do is add it to the `levels` array in the map. A sample level may look like below:
+## Extending
+
+- **Adding or modify levels** Head to the map file at `config/map.php` and follow the instructions at the top to add new level or modify the existing levels. To add a new level all you have to do is add it to the `levels` array in the map. A sample level may look like below: For further details. Also please check the docs in `config/map.php`.
 
 ```php
 [
@@ -116,12 +120,15 @@ In **order to add or modify levels**, head to the map file at `config/map.php` a
     ],
     'experiencePoints' => 10,   // Experience points added on successful completion of level
 ],
-```
+``` 
 
-For further details, please check the docs in `config/map.php`. If you would like to change the Console component, with something else, just implement the interface `KamranAhmed\Walkers\Console\Interfaces\ConsoleInterface` and pass the instance of it while initializing Game. In order to add new players types, just implement the `KamranAhmed\Walkers\Player\Interfaces\Player` interface and use in the map or wherever you want. For the storage, currently there is `JsonStorage` but you can easily replace it with database or anything else by implementing `\KamranAhmed\Walkers\Storage\Interfaces\GameStorage` and injecting that while initializing the game. Also you can add new walkers by implementing the `\KamranAhmed\Walkers\Walker\Interfaces\Walker` interface and use it. Plus, if you would want to modify the bite behavior, just override the `eat` method in the base walker class and implement your own in the walker.
+- **Changing the Console component** For now it relies upon the Symfony's console component. In order to extend, all you have to do is just implement the interface `KamranAhmed\Walkers\Console\Interfaces\ConsoleInterface` and pass the instance of it while initializing Game. 
+- **Adding New Players** You can introduce new players in the game just by implementing the `KamranAhmed\Walkers\Player\Interfaces\Player` interface. You might want to extend the `KamranAhmed\Walkers\Player\Abstracts\BasePlayer` class for some basic functionality.  
+- **Changing Storage Method** Currently there is `JsonStorage` but you can easily replace it with database or anything else by implementing `\KamranAhmed\Walkers\Storage\Interfaces\GameStorage` and injecting that while initializing the game. 
+- **Adding New Walkers** You can add new walkers by implementing the `\KamranAhmed\Walkers\Walker\Interfaces\Walker` interface and start using them. Plus, if you would want to modify the bite behavior, just override the `eat` method in the base walker class and implement your own in the walker.
 
-At the end, I would say, nothing is perfect, there is still some stuff that I am not happy with and would want to fix but can't find time to fix it.
+> At the end, I would say, nothing is perfect, there is still some stuff that I am not happy with and would want to fix but can't find time to fix it.
  
- ## License
+## License
  
  MIT &copy; [Kamran Ahmed](http://kamranahmed.info)

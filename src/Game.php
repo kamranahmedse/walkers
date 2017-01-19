@@ -147,6 +147,8 @@ class Game
      * Runs the game loop till the final level has reached
      * or the player is dead
      *
+     * @codeCoverageIgnore
+     *
      * @throws \KamranAhmed\Walkers\Exceptions\InvalidLevelException
      */
     protected function gameLoop()
@@ -238,6 +240,8 @@ class Game
     /**
      * Performs the specified action, if possible
      *
+     * @codeCoverageIgnore
+     *
      * @param $action
      *
      * @return void
@@ -257,6 +261,8 @@ class Game
 
     /**
      * Saves the game to storage
+     *
+     * @codeCoverageIgnore
      *
      * @return void
      */

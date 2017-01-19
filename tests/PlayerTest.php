@@ -19,6 +19,8 @@ class PlayerTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @dataProvider playersProvider
+     * @covers       BasePlayer::getHealth
+     * @covers       BasePlayer::isAlive
      *
      * @param \KamranAhmed\Walkers\Player\Interfaces\Player $player
      */
@@ -35,6 +37,8 @@ class PlayerTest extends PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider playersProvider
+     * @covers       BasePlayer::getExperience
+     * @covers       BasePlayer::isAlive
      *
      * @param \KamranAhmed\Walkers\Player\Interfaces\Player $player
      */
@@ -49,6 +53,8 @@ class PlayerTest extends PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider playersProvider
+     * @covers       BasePlayer::getName
+     * @covers       BasePlayer::setName
      *
      * @param \KamranAhmed\Walkers\Player\Interfaces\Player $player
      */
@@ -63,6 +69,7 @@ class PlayerTest extends PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider playersProvider
+     * @covers       BasePlayer::toArray
      *
      * @param \KamranAhmed\Walkers\Player\Interfaces\Player $player
      */

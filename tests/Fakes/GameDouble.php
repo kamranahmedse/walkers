@@ -1,6 +1,6 @@
 <?php
 
-namespace KamranAhmed\Tests\fakes;
+namespace KamranAhmed\Tests\Fakes;
 
 use BadMethodCallException;
 use Exception;

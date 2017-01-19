@@ -27,6 +27,8 @@ class JsonStorageTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers       JsonStorage::getSavedGame
+     *
      * @expectedException  \KamranAhmed\Walkers\Exceptions\InvalidGameData
      */
     public function testThrowsExceptionForInvalidGameData()
@@ -36,6 +38,8 @@ class JsonStorageTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers       JsonStorage::initialize
+     *
      * @expectedException  \KamranAhmed\Walkers\Exceptions\InvalidStoragePath
      */
     public function testThrowsInvalidStorageExceptionForInvalidPath()
@@ -47,6 +51,9 @@ class JsonStorageTest extends PHPUnit_Framework_TestCase
     /**
      * Checks if the encrypted game data is saved and not
      * just JSON is dumped
+     *
+     * @covers       JsonStorage::hasSavedGame
+     * @covers       JsonStorage::saveGame
      */
     public function testCanSaveGame()
     {
@@ -71,6 +78,11 @@ class JsonStorageTest extends PHPUnit_Framework_TestCase
         $this->assertNull(json_decode($savedContent, true));
     }
 
+    /**
+     * @covers       JsonStorage::saveGame
+     * @covers       JsonStorage::getSavedGame
+     * @covers       Map::getCurrentLevel
+     */
     public function testCanGetSavedGame()
     {
         // Simulate a player
@@ -97,6 +109,7 @@ class JsonStorageTest extends PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \KamranAhmed\Walkers\Exceptions\NoSavedGame
+     * @covers JsonStorage::getSavedGame
      */
     public function testCantGetNonSavedGame()
     {
@@ -104,6 +117,11 @@ class JsonStorageTest extends PHPUnit_Framework_TestCase
         $storage->getSavedGame();
     }
 
+    /**
+     * @covers JsonStorage::removeSavedGame
+     * @covers JsonStorage::saveGame
+     * @covers JsonStorage::hasSavedGame
+     */
     public function testCanRemoveSavedGame()
     {
         // Simulate a player

@@ -3,7 +3,7 @@
 namespace KamranAhmed\Walkers\Console\Interfaces;
 
 /**
- * Interface ConsoleInterface
+ * Interface Console
  *
  * @package KamranAhmed\Walkers\Console\Interfaces
  */

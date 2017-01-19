@@ -2,7 +2,7 @@
 
 namespace KamranAhmed\Tests;
 
-use KamranAhmed\Tests\fakes\GameDouble;
+use KamranAhmed\Tests\Fakes\GameDouble;
 use KamranAhmed\Walkers\Console\Interfaces\Console;
 use KamranAhmed\Walkers\Map;
 use KamranAhmed\Walkers\Player\GunnerRick;
@@ -23,6 +23,12 @@ class GameTest extends PHPUnit_Framework_TestCase
     protected $storagePath = __DIR__ . '/fixtures';
     protected $dataFile    = 'some-file.wd';
 
+    /**
+     * @covers Game::initialize
+     * @covers Game::showWelcome
+     * @covers Game::restoreSavedGame
+     * @covers Game::shouldRestore
+     */
     public function testUserCanChooseAndRestoreGame()
     {
         $console = $this->getEmptyConsoleMock(['askChoice']);
@@ -65,6 +71,12 @@ class GameTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(1, $game->map->getCurrentLevel());
     }
 
+    /**
+     * @covers Game::initialize
+     * @covers Game::showWelcome
+     * @covers Game::shouldRestore
+     * @covers Game::choosePlayer
+     */
     public function testUserCanChooseAndNotRestoreGame()
     {
         $console = $this->getEmptyConsoleMock(['askChoice']);
@@ -99,6 +111,8 @@ class GameTest extends PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider threeLeveledMapPlayersProvider
+     *
+     * @covers       Game::choosePlayer
      *
      * @param \KamranAhmed\Walkers\Player\Interfaces\Player $player
      * @param                                               $choice
@@ -136,6 +150,7 @@ class GameTest extends PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider menuItemsProvider
+     * @covers       Game::isMenuAction
      *
      * @param $item
      */
@@ -158,6 +173,9 @@ class GameTest extends PHPUnit_Framework_TestCase
         ];
     }
 
+    /**
+     * @covers Game::isWalkerDoor
+     */
     public function testWalkerDoorCanBeIdentified()
     {
         $console = $this->getEmptyConsoleMock();
@@ -176,6 +194,34 @@ class GameTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($game->isWalkerDoor($doors, 'Door # 1'));
     }
 
+    /**
+     * @covers Game::generateDoorMenu
+     */
+    public function testCanGenerateDoorMenu()
+    {
+        $console = $this->getEmptyConsoleMock();
+        $map     = new Map($this->storagePath . '/map-3-level.php');
+        $storage = Mockery::mock(JsonStorage::class);
+
+        $game = new GameDouble($console, $storage, $map);
+
+        $doors = [
+            'Door # 1' => false,
+            'Door # 2' => new Blind(),
+            'Door # 3' => false,
+        ];
+
+        $menu = $game->generateDoorMenu($doors);
+
+        $expected = array_merge(array_keys($doors), GameDouble::MENU_ACTIONS);
+
+        $this->assertSame($expected, $menu);
+    }
+
+    /**
+     * @covers Game::endGame
+     * @covers Game::showProgress
+     */
     public function testEndGameShowsTheStatsIfPlayerIsAlive()
     {
         $storage = Mockery::mock(JsonStorage::class);

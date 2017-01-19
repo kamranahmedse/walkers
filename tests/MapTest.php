@@ -30,6 +30,9 @@ class MapTest extends PHPUnit_Framework_TestCase
         $this->getMap('map-non-existing.php');
     }
 
+    /**
+     * @covers Map::getLevelCount
+     */
     public function testCanLoadValidMap()
     {
         $map = $this->getMap('map-3-level.php');
@@ -39,6 +42,8 @@ class MapTest extends PHPUnit_Framework_TestCase
 
     /**
      * @expectedException  \KamranAhmed\Walkers\Exceptions\InvalidLevelException
+     *
+     * @covers Map::loadLevel
      */
     public function testThrowsExceptionWhenLoadingInvalidLevel()
     {
@@ -47,6 +52,14 @@ class MapTest extends PHPUnit_Framework_TestCase
         $map->loadLevel(5);
     }
 
+    /**
+     * @covers Map::getCurrentLevel
+     * @covers Map::getCurrentLevelExperience
+     * @covers Map::getWalkerCount
+     * @covers Map::getDoorCount
+     * @covers Map::getPlayers
+     * @covers Map::getWalkers
+     */
     public function testFirstLevelIsLoadedByDefault()
     {
         $map = $this->getMap('map-3-level.php');
@@ -59,6 +72,15 @@ class MapTest extends PHPUnit_Framework_TestCase
         $this->assertNotEmpty($map->getWalkers());
     }
 
+    /**
+     * @covers Map::loadLevel
+     * @covers Map::getCurrentLevel
+     * @covers Map::getCurrentLevelExperience
+     * @covers Map::getWalkerCount
+     * @covers Map::getDoorCount
+     * @covers Map::getPlayers
+     * @covers Map::getWalkers
+     */
     public function testCanLoadSpecificLevel()
     {
         $map = $this->getMap('map-3-level.php');
@@ -75,6 +97,8 @@ class MapTest extends PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider verifyLevelDataProvider
+     *
+     * @covers       Map::hasLevel
      *
      * @param string $mapFile
      * @param array  $existingLevels
@@ -93,6 +117,12 @@ class MapTest extends PHPUnit_Framework_TestCase
         }, $nonExistingLevels);
     }
 
+    /**
+     * @covers Map::canAdvance
+     * @covers Map::loadLevel
+     * @covers Map::getCurrentLevel
+     * @covers Map::advance
+     */
     public function testCanAdvanceIfPossible()
     {
         $map = $this->getMap('map-3-level.php');
@@ -116,6 +146,10 @@ class MapTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(2, $map->getCurrentLevel());
     }
 
+    /**
+     * @covers Map::getDoors
+     * @covers Map::advance
+     */
     public function testCanGetLevelDoors()
     {
         $map = $this->getMap('map-3-level.php');
@@ -132,6 +166,10 @@ class MapTest extends PHPUnit_Framework_TestCase
         $this->assertCount(5, $doors);
     }
 
+    /**
+     * @covers Map::getDoors
+     * @covers Map::nameDoors
+     */
     public function testLevelDoorsAreNamed()
     {
         $map = $this->getMap('map-3-level.php');
@@ -149,6 +187,10 @@ class MapTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(count($foundDoors), count($namedDoors));
     }
 
+    /**
+     * @covers Map::getDoors
+     * @covers Map::advance
+     */
     public function testCanShuffleDoors()
     {
         $map = $this->getMap('map-3-level.php');
@@ -173,6 +215,10 @@ class MapTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($iter1Walkers !== $iter2Walkers || $iter1Walkers !== $iter3Walkers);
     }
 
+    /**
+     * @covers Map::getDoors
+     * @covers Map::advance
+     */
     public function testCanGetUnShuffleDoors()
     {
         $map = $this->getMap('map-3-level.php');

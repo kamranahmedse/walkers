@@ -20,6 +20,9 @@ class WalkerTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider walkersProvider
      *
+     * @covers       Walker::getName
+     * @covers       Walker::setName
+     *
      * @param \KamranAhmed\Walkers\Walker\Interfaces\Walker $walker
      */
     public function testCanGetWalkerName(Walker $walker)
@@ -33,6 +36,11 @@ class WalkerTest extends PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider walkersProvider
+     *
+     * @covers       BasePlayer::getHealth
+     * @covers       BasePlayer::isAlive
+     * @covers       Walker::eat
+     * @covers       Walker::getDamage
      *
      * @param \KamranAhmed\Walkers\Walker\Interfaces\Walker $walker
      */
@@ -55,7 +63,7 @@ class WalkerTest extends PHPUnit_Framework_TestCase
 
         $this->assertFalse($player->isAlive());
     }
-
+    
     public function walkersProvider()
     {
         return [

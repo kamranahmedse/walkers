@@ -15,6 +15,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * Responsible for initializing the game
  *
  * @package KamranAhmed\Walkers
+ *
+ * @codeCoverageIgnore
  */
 class Runner extends Command
 {
