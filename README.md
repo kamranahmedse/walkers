@@ -106,7 +106,7 @@ Final level is reached.
 
 ## Extending
 
-- **Adding or modify levels** Head to the map file at `config/map.php` and follow the instructions at the top to add new level or modify the existing levels. To add a new level all you have to do is add it to the `levels` array in the map. A sample level may look like below: For further details. Also please check the docs in `config/map.php`.
+- **Adding or modifying levels** Head to the map file at `config/map.php` and follow the instructions at the top to add new level or modify the existing levels. To add a new level all you have to do is add it to the `levels` array in the map. A sample level may look like below: For further details. Also please check the docs in `config/map.php`.
 
 ```php
 [
