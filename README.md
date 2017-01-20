@@ -111,11 +111,11 @@ Final level is reached.
 ```php
 [
     'doorCount'        => 3,    // Doors on this level
-    'players'          => [     // Array of allowed (if first) or unlocked (on other levels [TODO]) 
+    'players'          => [     // Array of allowed players (if first level) or players to be unlocked (on any other levels [TODO]) 
         'Rick - The Father' => GunnerRick::class,
         'Carl - The Kid'    => KidCarl::class,
     ],
-    'walkers'          => [     // Array of walkers that will be put in a random door
+    'walkers'          => [     // Array of walkers that will be put in random doors
         OneLegged::class,
     ],
     'experiencePoints' => 10,   // Experience points added on successful completion of level
