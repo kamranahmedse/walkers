@@ -99,7 +99,7 @@ Final level is reached.
 - `/src/Storage` has everything relevant to storage. Currently there is JSON file storage support.
 - `/src/Game.php` houses the game loop and acts as the controller for game.
 - `/src/Map.php` has all the map specific details.
-- `/src/Runner.php` Symfony command that initiates the game loop. Symfony's console component needs that.
+- `/src/Runner.php` Runner (A symfony command) that initiates the game loop.
 - `/storage` contains any storage related data
 - `/tests` of-course contain the test cases.
 - `/index.php` is the file that bootstraps the game
