@@ -126,8 +126,6 @@ Final level is reached.
 - **Adding New Players** You can introduce new players in the game just by implementing the `KamranAhmed\Walkers\Player\Interfaces\Player` interface. You might want to extend the `KamranAhmed\Walkers\Player\Abstracts\BasePlayer` class for some basic functionality.  
 - **Changing Storage Method** Currently there is `JsonStorage` but you can easily replace it with database or anything else by implementing `\KamranAhmed\Walkers\Storage\Interfaces\GameStorage` and injecting that while initializing the game. 
 - **Adding New Walkers** You can add new walkers by implementing the `\KamranAhmed\Walkers\Walker\Interfaces\Walker` interface and start using them. Plus, if you would want to modify the bite behavior, just override the `eat` method in the base walker class and implement your own in the walker.
-
-At the end, I would say, nothing is perfect, there is still some stuff that I am not happy with and would want to fix but can't find time to fix it.
  
 ## License
  
